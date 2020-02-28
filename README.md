@@ -7,7 +7,9 @@
 
 ## Installation
 
-Django [WIP]
+Python >= 3.6
+
+Django >= 3.0
 https://docs.djangoproject.com/en/3.0/topics/install/
 
 MySQL
