@@ -5,14 +5,19 @@
 - [Requirements](#requirements)
 - [Installation](#installation)
 - [Usage](#usage)
-- [Project Structure](#projectstructure)
+  - [Running the Webserver](#running-the-webserver)
+- [Project Structure](#project-structure)
+
+---
 
 ## Requirements
 
-* Python     >= 3.7
-* Pip        >= 20.0.2 (latest)
-* Virtualenv >= 20.0.7 (latest)
-* Django     >= 3.0
+- Python     >= 3.7
+- Pip        >= 20.0.2 (latest)
+- Virtualenv >= 20.0.7 (latest)
+- Django     >= 3.0
+
+---
 
 ## Installation
 
@@ -26,6 +31,7 @@ source env/bin/activate
 
 Install all requirements using pip
 NOTE: please ensure you are in the repo's root directory
+
 ```bash
 pip install -r requirements.txt
 ```
@@ -35,13 +41,27 @@ https://docs.djangoproject.com/en/3.0/topics/install/
 MySQL
 https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/
 
+---
 
 ## Usage
 
+### Running the Webserver
+
+To run the webserver during development; ensure you are in your virtual environment
+
+```bash
+python ./bug_hunt/manage.py runserver
+```
+
+This will run a small webserver at 127.0.0.1:8000
+
+---
+
 ## Project Structure
+
 ```
 .
-├── Project Artifacts
+├── Project_Artifacts
 │   ├── BugHound.vpp
 │   ├── BugHound_ER_Diagram.JPG
 │   ├── Bughound-use-case_ver1.1.docx
@@ -50,13 +70,33 @@ https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/
 │   └── SampleUSECASE4Bughound.docx
 ├── README.md
 ├── bug_hunt
-│   ├── bug_hunt
+│   ├── app         <---- This is where the application resides
+│   │   ├── __init__.py
+│   │   ├── admin.py
+│   │   ├── apps.py
+│   │   ├── migrations
+│   │   │   └── __init__.py
+│   │   ├── models.py
+│   │   ├── tests.py
+│   │   ├── urls.py
+│   │   └── views.py
+│   ├── bug_hunt    <---- This is the 'project' folder
 │   │   ├── __init__.py
 │   │   ├── asgi.py
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   └── wsgi.py
+│   ├── db.sqlite3
 │   └── manage.py
-├── requirements.txt
-└── src
+└── requirements.txt
+```
+
+---
+
+## Useful commands
+
+Print project directory
+
+```bash
+tree -I 'env|__pycache' .
 ```
