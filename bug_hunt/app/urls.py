@@ -1,6 +1,16 @@
 from django.urls import path
 from . import views
 
+app_name = 'app'
 urlpatterns = [
     path('', views.index, name='index'),
+    path('new-bug', views.new_bug, name='new_bug'),
+    path('update-bug', views.update_bug, name='update_bug'),
+    path('admin/db-maintenance', views.database_maintenance, name='database_maintenance'),
+    path('admin/edit-add-areas', views.edit_add_areas, name='edit_add_areas'),
+    path('admin/add-programs', views.add_programs, name='add_programs'),
+    path('admin/edit-programs', views.edit_programs, name='edit_programs'),
+    path('admin/add-employees', views.add_employees, name='add_employees'),
+    path('admin/edit-employees', views.edit_employees, name='edit_employees'),
+    path('admin/export-areas', views.export_areas, name='export_areas'),
 ]
