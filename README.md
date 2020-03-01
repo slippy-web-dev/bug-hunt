@@ -36,10 +36,10 @@ NOTE: please ensure you are in the repo's root directory
 pip install -r requirements.txt
 ```
 
-https://docs.djangoproject.com/en/3.0/topics/install/
+~~https://docs.djangoproject.com/en/3.0/topics/install/~~
 
-MySQL
-https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/
+~~MySQL~~
+~~https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/~~
 
 ---
 
@@ -54,6 +54,13 @@ python ./bug_hunt/manage.py runserver
 ```
 
 This will run a small webserver at 127.0.0.1:8000
+
+### Application routes
+
+Append to 127.0.0.1:8000
+
+- /app
+  - Webapp's index and main entry point
 
 ---
 
@@ -99,4 +106,17 @@ Print project directory
 
 ```bash
 tree -I 'env|__pycache' .
+```
+
+Django migration stuffs
+
+```bash
+# Updating Django models (and subsequent DB schema)
+python manage.py makemigrations app
+
+# Updating DB to match Django models
+python manage.py migrate
+
+# Checking (for errors) migrations before making migrations
+python manage.py check
 ```
