@@ -6,6 +6,8 @@
 - [Installation](#installation)
 - [Usage](#usage)
   - [Running the Webserver](#running-the-webserver)
+  - [Application Routes](#application-routes)
+  - [Creating an Admin user](#creating-an-admin-user)
 - [Project Structure](#project-structure)
 
 ---
@@ -55,12 +57,26 @@ python ./bug_hunt/manage.py runserver
 
 This will run a small webserver at 127.0.0.1:8000
 
-### Application routes
+### Application Routes
 
 Append to 127.0.0.1:8000
 
+- /admin
+  - This is to access the admin login page
 - /app
   - Webapp's index and main entry point
+
+### Creating an Admin User
+
+1. Use manage.py to create an admin user
+
+```bash
+python manage.py createsuperuser
+```
+
+2. Enter desired username
+3. Enter desired email
+4. Enter desired password
 
 ---
 
