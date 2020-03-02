@@ -55,7 +55,10 @@ ROOT_URLCONF = 'bug_hunt.urls'
 TEMPLATES = [
     {
         'BACKEND': 'django.template.backends.django.DjangoTemplates',
-        'DIRS': [],
+        'DIRS': [
+            os.path.join(BASE_DIR, 'templates'),
+            os.path.join(BASE_DIR, 'registration')
+            ],
         'APP_DIRS': True,
         'OPTIONS': {
             'context_processors': [
@@ -119,3 +122,9 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+
+# User stuff
+
+LOGIN_URL = '/app/login/'
+LOGIN_REDIRECT_URL = '/app/index/'
+LOGOUT_REDIRECT_URL = '/app/login/'
