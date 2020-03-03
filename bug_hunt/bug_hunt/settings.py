@@ -124,7 +124,7 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # User stuff
-
+SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL = '/app/login/'
 LOGIN_REDIRECT_URL = '/app/index/'
 LOGOUT_REDIRECT_URL = '/app/login/'

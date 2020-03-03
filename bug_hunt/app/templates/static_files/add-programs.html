@@ -1,0 +1,33 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Add Programs</title>
+  </head>
+  <body>
+    {% if  program_list %}
+    <table style="width:30%" >
+    {% for program in program_list %}
+    <tr>
+      <td>{{ program.program_name }}</td>
+      <td>{{ program.program_version }}</td>
+      <td>{{ program.program_release }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+    <p>Add a Program</p>
+    <form action="{% url 'app:add_programs' %}" method="POST"> {% csrf_token %}
+      <label for="program_name">Program Name </label>
+      <input type="text" name="program_name"> </br></br>
+      <label for="program_version">Program Version </label>
+      <input type="text" name="program_version"></br></br>
+      <label for="program_release">Program Release </label>
+      <input type="text" name="program_release"></br></br>
+      <input type="submit" value="Submit">
+      <!-- <button onclick="{% url 'app:index' %}" type="button">Cancel</button> -->
+      <input type="reset" value="Cancel">
+    </form>
+    
+  </body>
+</html>

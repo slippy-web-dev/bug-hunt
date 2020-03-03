@@ -11,15 +11,9 @@
     <ul>
       <li><a href="{% url 'app:new_bug' %}">Enter a NEW Bug</a></li>
       <li><a href="{% url 'app:update_bug' %}">Update EXISTING Bug</a></li>
+      {% if is_admin %}
       <li><a href="{% url 'app:database_maintenance' %}">Database Maintenance</a></li>
+      {% endif %}
     </ul>
-    
-    {% if test %}
-      <li>
-        <p>
-          {{test}}
-        </p>
-      </li>
-    {% endif %}
   </body>
 </html>

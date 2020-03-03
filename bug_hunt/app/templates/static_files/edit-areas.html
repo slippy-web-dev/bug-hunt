@@ -1,0 +1,29 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Edit Areas</title>
+  </head>
+  <body>
+    {% if  program_list|length > 1 %}
+    <table style="width:60%">
+      <tr>
+        <th>Program ID</th>
+        <th>Program Name</th>
+        <th>Version</th>
+        <th>Release</th>
+      </tr>
+      {% for program in program_list %}
+      <tr>
+        <td><a href="{% url 'app:add_areas' %}?program_id={{program.program_id}}">{{program.program_id}}</a></td>
+        <td>{{program.program_name}}</td>
+        <td>{{program.program_version}}</td>
+        <td>{{program.program_release}}</td>
+      </tr>
+      {% endfor %}
+    </table>
+    {% else %}
+    <p>There are no programs. You cannot add areas.</p>
+    {% endif %}
+  </body>
+</html>
