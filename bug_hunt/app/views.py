@@ -31,11 +31,21 @@ def database_maintenance(request):
 @staff_member_required
 def edit_areas(request):
     if request.method == 'POST':
-        print ("")
-    program_list = Programs.objects.all()
-    context = { 'message' : 'This is "edit/add areas" page' ,
-                'program_list' : program_list,
-              }
+        area_object = FunctionalAreas.objects.get(pk=request.POST['area_id'])
+        area_object.area = request.POST['area']
+        area_object.save()
+        program_id = request.POST['program_id']
+        program_object = Programs.objects.get(pk=program_id)
+        area_list = FunctionalAreas.objects.filter(program_id=program_id)
+        context = { 'program' : program_object,
+                    'area_list' : area_list,
+                  }
+        return render(request, 'static_files/add-areas.html', context=context)
+    else:
+        program_list = Programs.objects.all()
+        context = { 'message' : 'This is "edit/add areas" page' ,
+                    'program_list' : program_list,
+                }
     return render(request, 'static_files/edit-areas.html', context=context)
 
 @staff_member_required
@@ -46,7 +56,10 @@ def add_areas(request):
                                     program_id=program_object
                                    )
         area_object.save()
-        context = {}
+        area_list = FunctionalAreas.objects.filter(program_id=request.POST['program_id'])
+        context = { 'program' : program_object,
+                    'area_list' : area_list,
+                  }
     elif request.method == 'GET':
         program_id = request.GET.get('program_id')
         program_object = Programs.objects.get(pk=program_id)
@@ -73,18 +86,42 @@ def add_programs(request):
 
 @staff_member_required
 def edit_programs(request):
-    context = { 'message' : 'This is "edit programs" page' }
-    return render(request, 'static_files/test.html', context=context)
+    if request.method == 'POST':
+        program_object = Programs.objects.get(pk=request.POST['program_id'])
+        program_object.program_name = request.POST['program_name']
+        program_object.program_version = request.POST['program_version']
+        program_object.program_release = request.POST['program_release']
+        program_object.save()
+    program_list = Programs.objects.all()
+    context = { 'message' : 'This is "edit programs" page',
+                'program_list' : program_list,
+              }
+    return render(request, 'static_files/edit-programs.html', context=context)
 
 @staff_member_required
 def add_employees(request):
     if request.method == 'POST':
+        is_staff = False
+        if request.POST['accesslevels'] == 3:
+            is_staff = True
         this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
         new_employee = Employees(employee_name=request.POST['employee_name'],
                                  employee_username=request.POST['employee_username'],
                                  employee_password=request.POST['employee_password'],
-                                 employee_access_level=this_access_level
+                                 employee_accesslevel=this_access_level
                                 )
+        # new_employee.entry_set.add(this_access_level)
+        new_user = User.objects.create_user(username=request.POST['employee_username'],
+                                            password=request.POST['employee_password'],
+                                            first_name=request.POST['employee_name'],
+                                            is_staff=is_staff
+                                           )
+        new_user = User(first_name=request.POST['employee_name'],
+                        username=request.POST['employee_username'],
+                        password=request.POST['employee_password'],
+                        is_staff=is_staff
+                       )
+        new_employee.save()
     context = { 'message' : 'This is "add employees" page' }
     return render(request, 'static_files/add-employees.html', context=context)
 

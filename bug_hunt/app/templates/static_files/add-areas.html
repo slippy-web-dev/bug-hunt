@@ -15,10 +15,10 @@
       <th></th>
     </tr>
     {% for area in area_list %}
-    <form action="{% url 'app:add_areas' %}" method="POST"> {% csrf_token %}
+    <form action="{% url 'app:edit_areas' %}" method="POST"> {% csrf_token %}
       <tr>
-        <td>{{area.area_id}}</td>
-        <td>{{program.program_id}}</td>
+        <td>{{area.area_id}}<input type="hidden" name="area_id" value="{{area.area_id}}"></td>
+        <td>{{program.program_id}}<input type="hidden" name="program_id" value="{{program.program_id}}"></td>
         <td><input type="text" name="area" value="{{area.area}}"></td>
         <td><input type="submit" value="Update"></td>
       </tr>
@@ -34,8 +34,8 @@
     </form>
     </table>
     <!-- figure out which html button to use for 'Done' -->
-    {% else %}
-    <p>Program list did not load.. Please check the models && views</p>
+    <!-- {% else %}
+    <p>Program list did not load.. Please check the models && views</p> -->
     {% endif %}
   </body>
 </html>

@@ -1,6 +1,5 @@
 from django.db import models
 from django.core.validators import MinValueValidator, MaxValueValidator
-from django.contrib.auth.models import User
 
 # Create your models here.
 class Programs(models.Model):
@@ -24,13 +23,6 @@ class AccessLevels(models.Model):
 
     objects = models.Manager()
 
-# class EmployeesManager(models.Manager):
-    
-
-class EmployeeManager(models.Manager):
-    # Here you can define specific methods to execute when saving to DB
-    pass
-
 class Employees(models.Model):
     employee_id          = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])
     employee_name        = models.CharField(max_length=32)
@@ -39,7 +31,6 @@ class Employees(models.Model):
     employee_accesslevel = models.ForeignKey('AccessLevels', on_delete=models.CASCADE)
 
     objects = models.Manager()
-    # employee_manager = EmployeesManager()
 
 class ReportTypes(models.Model):
     report_type_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
