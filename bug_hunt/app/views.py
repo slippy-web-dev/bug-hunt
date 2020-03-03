@@ -102,7 +102,7 @@ def edit_programs(request):
 def add_employees(request):
     if request.method == 'POST':
         is_staff = False
-        if request.POST['accesslevels'] == 3:
+        if request.POST['accesslevels'] == '3':
             is_staff = True
         this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
         new_employee = Employees(employee_name=request.POST['employee_name'],
@@ -127,8 +127,32 @@ def add_employees(request):
 
 @staff_member_required
 def edit_employees(request):
-    context = { 'message' : 'This is "edit employees" page' }
-    return render(request, 'static_files/test.html', context=context)
+    if request.method == 'POST':
+        is_staff = False
+        print(request.POST['accesslevels'])
+        if request.POST['accesslevels'] == '3':
+            print('is_staff is true')
+            is_staff = True
+        this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
+        employee_object = Employees.objects.get(pk=request.POST['employee_id'])
+        user_lookup_name = employee_object.employee_name
+        employee_object.employee_name = request.POST['employee_name']
+        employee_object.employee_username = request.POST['employee_username']
+        employee_object.employee_password = request.POST['employee_password']
+        employee_object.employee_accesslevel = this_access_level
+
+        user_object = User.objects.get(first_name=user_lookup_name)
+        user_object.first_name = request.POST['employee_name']
+        user_object.username = request.POST['employee_username']
+        user_object.set_password(request.POST['employee_password'])
+        user_object.is_staff = is_staff
+        employee_object.save()
+        user_object.save()
+    employee_list = Employees.objects.all()
+    context = { 'message' : 'This is "edit employees" page',
+                'employee_list' : employee_list,
+              }
+    return render(request, 'static_files/edit-employees.html', context=context)
 
 @staff_member_required
 def export_areas(request):
