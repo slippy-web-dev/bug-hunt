@@ -168,4 +168,8 @@ Print project directory
 tree -I 'env|__pycache' .
 ```
 
+Django Import Export DB
 
+```
+https://dev.to/coderasha/how-to-export-import-data-django-package-series-3-39mk
+```

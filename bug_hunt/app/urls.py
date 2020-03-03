@@ -16,5 +16,5 @@ urlpatterns = [
     path('admin/edit-programs/', views.edit_programs, name='edit_programs'),
     path('admin/add-employees/', views.add_employees, name='add_employees'),
     path('admin/edit-employees/', views.edit_employees, name='edit_employees'),
-    path('admin/export-areas/', views.export_areas, name='export_areas'),
+    path('admin/export-data/', views.export_data, name='export_data'),
 ]

@@ -3,7 +3,10 @@ from django.http import HttpResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
+from tablib import Dataset
+
 from .models import Employees, FunctionalAreas, Programs, AccessLevels
+from .resources import EmployeesResource, FunctionalAreasResource, ProgramsResource
 
 # Create your views here.
 @login_required
@@ -129,9 +132,7 @@ def add_employees(request):
 def edit_employees(request):
     if request.method == 'POST':
         is_staff = False
-        print(request.POST['accesslevels'])
         if request.POST['accesslevels'] == '3':
-            print('is_staff is true')
             is_staff = True
         this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
         employee_object = Employees.objects.get(pk=request.POST['employee_id'])
@@ -158,3 +159,52 @@ def edit_employees(request):
 def export_areas(request):
     context = { 'message' : 'This is "export areas" page' }
     return render(request, 'static_files/test.html', context=context)
+
+@staff_member_required
+def export_data(request):
+    context = {}
+    if request.method == 'POST':
+        # Get selected option from form
+        file_format = request.POST['file_format']
+        db_table = request.POST['db_table']
+        if db_table == 'Employees':
+            table_object = Employees.objects.all()
+            employee_resource = EmployeesResource()
+            dataset = employee_resource.export()
+        elif db_table == 'Programs':
+            table_object = Programs.objects.all()
+            program_resource = ProgramsResource()
+            dataset = program_resource.export()
+        elif db_table == 'FunctionalAreas':
+            table_object = FunctionalAreas.objects.all()
+            area_resource = FunctionalAreasResource()
+            dataset = area_resource.export()
+        else:
+            context = { 'message' : 'Please type in "Employees", "Programs", or "FunctionalAreas"'}
+            return render(request, 'static_files/export.html', context=context)
+
+        if file_format == 'CSV':
+            response = HttpResponse(dataset.csv, content_type='text/csv')
+            response['Content-Disposition'] = 'attachment; filename="exported_data.csv"'
+            return response        
+        elif file_format == 'JSON':
+            response = HttpResponse(dataset.json, content_type='application/json')
+            response['Content-Disposition'] = 'attachment; filename="exported_data.json"'
+            return response
+        elif file_format == 'XLS (Excel)':
+            response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
+            response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
+            return response
+        elif file_format == 'XML':
+            from django.core import serializers
+            data = serializers.serialize('xml', table_object)
+            from django.core.files import File
+            f = open('exported_data.xml', 'w')
+            my_file = File(f)
+            my_file.write(data)
+            my_file.close()
+            context = { 'message' : 'XML successfully exported!' }
+        else:
+            context = { 'message' : 'Please type in one of the following choices: CSV, JSON, XLS (Excel), XML'}
+            return render(request, 'static_files/export.html', context=context)
+    return render(request, 'static_files/export.html', context=context)

@@ -32,6 +32,7 @@ ALLOWED_HOSTS = []
 
 INSTALLED_APPS = [
     'app.apps.AppConfig',
+    'import_export',
     'django.contrib.admin',
     'django.contrib.auth',
     'django.contrib.contenttypes',
@@ -124,6 +125,8 @@ USE_TZ = True
 STATIC_URL = '/static/'
 
 # User stuff
+DEFAULT_FILE_STORAGE = '/out/'
+IMPORT_EXPORT_USE_TRANSACTIONS = True
 SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL = '/app/login/'
 LOGIN_REDIRECT_URL = '/app/index/'

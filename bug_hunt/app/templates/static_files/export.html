@@ -1,0 +1,26 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Export Data Page</title>
+  </head>
+  <body>
+    {% if message %}
+    <h1>{{message}}</h1>
+    {% endif %}
+    <form action="{% url 'app:export_data' %}" method="POST"> {% csrf_token %}
+      <table style="width:30%">
+        <tr>
+          <td>
+            <input type="text" name="db_table" value="Employees">
+          </td>
+          <td>
+            <input type="text" name="file_format" value="XML">
+          </td>
+          <td><input type="submit" value="Submit"></td>
+          <td><input type="reset" value="Cancel"></td>
+        </tr>
+      </table>
+    </form>
+  </body>
+</html>
