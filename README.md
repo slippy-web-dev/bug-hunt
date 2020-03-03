@@ -8,6 +8,7 @@
   - [Running the Webserver](#running-the-webserver)
   - [Application Routes](#application-routes)
   - [Creating an Admin user](#creating-an-admin-user)
+  - [Managing the DB](#managing-the-db)
 - [Project Structure](#project-structure)
 
 ---
@@ -61,9 +62,10 @@ This will run a small webserver at 127.0.0.1:8000
 
 Append to 127.0.0.1:8000
 
-- /admin
-  - This is to access the admin login page
-- /app
+- /admin/
+  - This is to access the Django admin login page
+  - Dev use only!!
+- /app/index/
   - Webapp's index and main entry point
 
 ### Creating an Admin User
@@ -75,8 +77,32 @@ python manage.py createsuperuser
 ```
 
 2. Enter desired username
-3. Enter desired email
+3. Enter desired email (optional)
 4. Enter desired password
+
+### Managing the DB
+
+To synchronize changes made in the models
+
+```bash
+# Updating Django models (and subsequent DB schema)
+python manage.py makemigrations app
+
+# Updating DB to match Django models
+python manage.py migrate
+
+# Checking (for errors) migrations before making migrations
+python manage.py check
+```
+
+To remove all data from the DB
+
+```bash
+# Removes all data from DB
+# BUT DOES NOT RESET AUTO_INCREMENT COUNTER
+# (will continue from last pk)
+python manage.py flush
+```
 
 ---
 
@@ -92,25 +118,43 @@ python manage.py createsuperuser
 │   ├── ProjectDocument_v1.0-(02-18-2020).docx
 │   └── SampleUSECASE4Bughound.docx
 ├── README.md
-├── bug_hunt
-│   ├── app         <---- This is where the application resides
+├── bug_hunt             <--- This is where the project lives
+│   ├── app              <--- This is where all app-related code lives
 │   │   ├── __init__.py
 │   │   ├── admin.py
 │   │   ├── apps.py
 │   │   ├── migrations
+│   │   │   ├── 0001_initial.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
+│   │   ├── templates
+│   │   │   └── static_files
+│   │   │       ├── add-areas.html
+│   │   │       ├── add-employees.html
+│   │   │       ├── add-programs.html
+│   │   │       ├── db-maintenance.html
+│   │   │       ├── edit-areas.html
+│   │   │       ├── edit-employees.html
+│   │   │       ├── edit-programs.html
+│   │   │       ├── home.html
+│   │   │       └── test.html
 │   │   ├── tests.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── bug_hunt    <---- This is the 'project' folder
+│   ├── bug_hunt         <--- This is where web server configurations live
 │   │   ├── __init__.py
 │   │   ├── asgi.py
 │   │   ├── settings.py
 │   │   ├── urls.py
 │   │   └── wsgi.py
 │   ├── db.sqlite3
-│   └── manage.py
+│   ├── manage.py
+│   └── templates
+│       ├── admin
+│       │   ├── base.html
+│       │   └── base_site.html
+│       └── registration
+│           └── login.html
 └── requirements.txt
 ```
 
@@ -124,15 +168,4 @@ Print project directory
 tree -I 'env|__pycache' .
 ```
 
-Django migration stuffs
 
-```bash
-# Updating Django models (and subsequent DB schema)
-python manage.py makemigrations app
-
-# Updating DB to match Django models
-python manage.py migrate
-
-# Checking (for errors) migrations before making migrations
-python manage.py check
-```
