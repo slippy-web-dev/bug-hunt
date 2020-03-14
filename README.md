@@ -110,16 +110,9 @@ python manage.py flush
 
 ```
 .
-├── Project_Artifacts
-│   ├── BugHound.vpp
-│   ├── BugHound_ER_Diagram.JPG
-│   ├── Bughound-use-case_ver1.1.docx
-│   ├── Bughound-use-case_ver1.2.docx
-│   ├── ProjectDocument_v1.0-(02-18-2020).docx
-│   └── SampleUSECASE4Bughound.docx
 ├── README.md
-├── bug_hunt             <--- This is where the project lives
-│   ├── app              <--- This is where all app-related code lives
+├── bug_hunt
+│   ├── app
 │   │   ├── __init__.py
 │   │   ├── admin.py
 │   │   ├── apps.py
@@ -127,6 +120,7 @@ python manage.py flush
 │   │   │   ├── 0001_initial.py
 │   │   │   └── __init__.py
 │   │   ├── models.py
+│   │   ├── resources.py
 │   │   ├── templates
 │   │   │   └── static_files
 │   │   │       ├── add-areas.html
@@ -136,12 +130,13 @@ python manage.py flush
 │   │   │       ├── edit-areas.html
 │   │   │       ├── edit-employees.html
 │   │   │       ├── edit-programs.html
+│   │   │       ├── export.html
 │   │   │       ├── home.html
 │   │   │       └── test.html
 │   │   ├── tests.py
 │   │   ├── urls.py
 │   │   └── views.py
-│   ├── bug_hunt         <--- This is where web server configurations live
+│   ├── bug_hunt
 │   │   ├── __init__.py
 │   │   ├── asgi.py
 │   │   ├── settings.py
@@ -155,6 +150,7 @@ python manage.py flush
 │       │   └── base_site.html
 │       └── registration
 │           └── login.html
+├── exported_data.xml
 └── requirements.txt
 ```
 
@@ -165,7 +161,7 @@ python manage.py flush
 Print project directory
 
 ```bash
-tree -I 'env|__pycache' .
+tree -I 'env|__pycache__' .
 ```
 
 Django Import Export DB
