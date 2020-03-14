@@ -12,7 +12,7 @@ from .resources import EmployeesResource, FunctionalAreasResource, ProgramsResou
 @login_required
 def index(request):
     is_admin = request.user.is_staff
-    test_object = { 'test' : 7 }
+    # test_object = { 'test' : 7 }
     context = { 'is_admin' : is_admin }
     return render(request, 'static_files/home.html', context=context)
 
