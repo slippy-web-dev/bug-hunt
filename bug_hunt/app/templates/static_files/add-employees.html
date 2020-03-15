@@ -8,7 +8,7 @@
     <p>Add an Employee</p>
     <form action="{% url 'app:add_employees' %}" method="POST"> {% csrf_token %}
       <label for="employee_name">Name </label>
-      <input type="text" name="employee_name" value="{{ new_employee.employee_username }}"> </br></br>
+      <input type="text" name="employee_name" value="{{ new_employee.employee_name }}"> </br></br>
       {% if messages %}
           {% for message in messages %}
             {% if 'employee_name_empty' in message.extra_tags %} 
