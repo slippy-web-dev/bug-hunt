@@ -4,6 +4,7 @@ from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from tablib import Dataset
+from django.contrib import messages
 
 from .models import Employees, FunctionalAreas, Programs, AccessLevels
 from .resources import EmployeesResource, FunctionalAreasResource, ProgramsResource
@@ -55,10 +56,13 @@ def edit_areas(request):
 def add_areas(request):
     if request.method == 'POST':
         program_object = Programs.objects.get(pk=request.POST['program_id'])
-        area_object = FunctionalAreas(area=request.POST['area'],
-                                    program_id=program_object
-                                   )
-        area_object.save()
+        if len(request.POST['area']) > 0:
+            area_object = FunctionalAreas(area=request.POST['area'],
+                                        program_id=program_object
+                                    )
+            area_object.save()
+        else:
+            messages.error(request, 'Area name cannot be empty')
         area_list = FunctionalAreas.objects.filter(program_id=request.POST['program_id'])
         context = { 'program' : program_object,
                     'area_list' : area_list,
@@ -80,11 +84,14 @@ def add_programs(request):
                 'program_list' : program_list,
               }
     if request.method == 'POST':
-        new_program = Programs(program_name=request.POST['program_name'],
-                               program_version=request.POST['program_version'],
-                               program_release=request.POST['program_release']
-                              )
-        new_program.save()
+        if len(request.POST['program_name']) > 0:
+            new_program = Programs(program_name=request.POST['program_name'],
+                                program_version=request.POST['program_version'],
+                                program_release=request.POST['program_release']
+                                )
+            new_program.save()
+        else: 
+            messages.error(request, 'Program name cannot be empty')
     return render(request, 'static_files/add-programs.html', context=context)
 
 @staff_member_required
@@ -103,29 +110,41 @@ def edit_programs(request):
 
 @staff_member_required
 def add_employees(request):
-    if request.method == 'POST':
+    if request.method == 'GET':
+        new_employee = Employees()
+    if request.method == 'POST':      
         is_staff = False
         if request.POST['accesslevels'] == '3':
             is_staff = True
         this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
         new_employee = Employees(employee_name=request.POST['employee_name'],
-                                 employee_username=request.POST['employee_username'],
-                                 employee_password=request.POST['employee_password'],
-                                 employee_accesslevel=this_access_level
+                                employee_username=request.POST['employee_username'],
+                                employee_password=request.POST['employee_password'],
+                                employee_accesslevel=this_access_level
                                 )
-        # new_employee.entry_set.add(this_access_level)
-        new_user = User.objects.create_user(username=request.POST['employee_username'],
-                                            password=request.POST['employee_password'],
-                                            first_name=request.POST['employee_name'],
-                                            is_staff=is_staff
-                                           )
-        new_user = User(first_name=request.POST['employee_name'],
-                        username=request.POST['employee_username'],
-                        password=request.POST['employee_password'],
-                        is_staff=is_staff
-                       )
-        new_employee.save()
-    context = { 'message' : 'This is "add employees" page' }
+        if len(request.POST['employee_name']) == 0:
+            messages.add_message(request, messages.INFO, "Employee name must not be empty",extra_tags='employee_name_empty')
+        elif len(request.POST['employee_username']) == 0:
+            messages.add_message(request, messages.INFO, "Employee username must not be empty",extra_tags='employee_username_empty')
+        elif len(request.POST['employee_password']) == 0:
+            messages.add_message(request, messages.INFO, "Employee password must not be empty",extra_tags='employee_password_empty')
+        else:
+            # new_employee.entry_set.add(this_access_level)
+            new_user = User.objects.create_user(username=request.POST['employee_username'],
+                                                password=request.POST['employee_password'],
+                                                first_name=request.POST['employee_name'],
+                                                is_staff=is_staff
+                                            )
+            new_user = User(first_name=request.POST['employee_name'],
+                            username=request.POST['employee_username'],
+                            password=request.POST['employee_password'],
+                            is_staff=is_staff
+                        )
+            new_employee.save()
+            new_employee = Employees()
+    context = { 'message' : 'This is "add employees" page',
+                'new_employee': new_employee,
+                }
     return render(request, 'static_files/add-employees.html', context=context)
 
 @staff_member_required

@@ -31,6 +31,19 @@
         <td><input type="text" name="area"></td>
         <td><input type="submit" value="Add Area"></td>
       </tr>
+      <tr>
+        <td></td>
+        <td></td>
+        <td>
+          {% if messages %}
+          <ul class="messages">
+              {% for message in messages %}
+              <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+              {% endfor %} </br>
+          </ul>
+          {% endif %}
+        </td>
+      </tr>
     </form>
     </table>
     <!-- figure out which html button to use for 'Done' -->

@@ -20,6 +20,13 @@
     <form action="{% url 'app:add_programs' %}" method="POST"> {% csrf_token %}
       <label for="program_name">Program Name </label>
       <input type="text" name="program_name"> </br></br>
+      {% if messages %}
+      <ul class="messages">
+          {% for message in messages %}
+          <li{% if message.tags %} class="{{ message.tags }}"{% endif %}>{{ message }}</li>
+          {% endfor %} </br>
+      </ul>
+      {% endif %}
       <label for="program_version">Program Version </label>
       <input type="text" name="program_version"></br></br>
       <label for="program_release">Program Release </label>
