@@ -7,6 +7,11 @@
   <body>
     {% if  program_list %}
     <p>Edit a Program</p>
+    {% if messages %}
+      {% for message in messages %}
+        <li>{{ message }}</li></br>
+      {% endfor %} 
+    {% endif %}
     <table style="width:30%" >
     {% for program in program_list %}
     <form action="{% url 'app:edit_programs' %}" method="POST"> {% csrf_token %}
@@ -31,5 +36,6 @@
     </table>
     {% endif %}
     
+    <a href="/app/admin/db-maintenance">Back</a>
   </body>
 </html>

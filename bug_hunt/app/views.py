@@ -102,6 +102,8 @@ def edit_programs(request):
         program_object.program_version = request.POST['program_version']
         program_object.program_release = request.POST['program_release']
         program_object.save()
+        # when save() is successful
+        messages.info(request, 'Program ' + program_object.program_name + ' has been updated')
     program_list = Programs.objects.all()
     context = { 'message' : 'This is "edit programs" page',
                 'program_list' : program_list,
@@ -155,12 +157,12 @@ def edit_employees(request):
             is_staff = True
         this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
         employee_object = Employees.objects.get(pk=request.POST['employee_id'])
-        user_lookup_name = employee_object.employee_name
         employee_object.employee_name = request.POST['employee_name']
         employee_object.employee_username = request.POST['employee_username']
         employee_object.employee_password = request.POST['employee_password']
         employee_object.employee_accesslevel = this_access_level
 
+        user_lookup_name = employee_object.employee_name
         user_object = User.objects.get(first_name=user_lookup_name)
         user_object.first_name = request.POST['employee_name']
         user_object.username = request.POST['employee_username']
@@ -168,6 +170,8 @@ def edit_employees(request):
         user_object.is_staff = is_staff
         employee_object.save()
         user_object.save()
+        # when save() is successful
+        messages.info(request, 'Employee ' + user_lookup_name + ' has been updated')
     employee_list = Employees.objects.all()
     context = { 'message' : 'This is "edit employees" page',
                 'employee_list' : employee_list,
