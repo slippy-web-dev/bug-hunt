@@ -9,6 +9,8 @@ from django.contrib import messages
 from .models import Employees, FunctionalAreas, Programs, AccessLevels
 from .resources import EmployeesResource, FunctionalAreasResource, ProgramsResource
 
+import sqlite3, re
+
 # Create your views here.
 @login_required
 def index(request):
@@ -227,6 +229,33 @@ def export_data(request):
             my_file.write(data)
             my_file.close()
             context = { 'message' : 'XML successfully exported!' }
+        elif file_format == 'ASCII':
+            con = sqlite3.connect('db.sqlite3')
+            with open('exported_data.txt', 'w') as f:
+                for line in con.iterdump():
+                    # edit LINE to fit with SQL format
+                    if any(invalid_stmt in line for invalid_stmt in ['BEGIN TRANSACTION','COMMIT','sqlite_sequence','CREATE UNIQUE INDEX']): 
+                        continue
+                    else:
+                        m = re.search('CREATE TABLE "([a-z_]*)"(.*)', line)
+                        if m :
+                            name, sub = m.groups()
+                            sub = sub.replace('"','`')
+                            line = '''DROP TABLE IF EXISTS %(name)s; CREATE TABLE IF NOT EXISTS %(name)s%(sub)s'''
+                            line = line % dict(name=name, sub=sub)
+                        else:
+                            m = re.search('INSERT INTO "([a-z_]*)"(.*)', line)
+                            if m:
+                                line = 'INSERT INTO %s%s\n' % m.groups()
+                                line = line.replace('"', r'\"')
+                                line = line.replace('"', "'")
+                        line = re.sub(r"([^'])'t'(.)", r"\1THIS_IS_TRUE\2", line)
+                        line = line.replace('THIS_IS_TRUE', '1')
+                        line = re.sub(r"([^'])'f'(.)", r"\1THIS_IS_FALSE\2", line)
+                        line = line.replace('THIS_IS_FALSE', '0')
+                        line = line.replace('AUTOINCREMENT', 'AUTO_INCREMENT')
+                        line = line.replace('app_', '')
+                        f.write('%s\n' % line)
         else:
             context = { 'message' : 'Please type in one of the following choices: CSV, JSON, XLS (Excel), XML'}
             return render(request, 'static_files/export.html', context=context)
