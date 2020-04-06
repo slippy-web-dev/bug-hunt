@@ -86,14 +86,19 @@ def add_programs(request):
                 'program_list' : program_list,
               }
     if request.method == 'POST':
-        if len(request.POST['program_name']) > 0:
+        
+        if len(request.POST['program_name']) == 0: 
+            messages.add_message(request, messages.INFO, 'Program name cannot be empty', extra_tags='program_name_empty')
+        elif len(request.POST['program_version']) == 0:
+            messages.add_message(request, messages.INFO, 'Program version cannot be empty', extra_tags='program_version_empty')
+        elif len(request.POST['program_release']) == 0:
+            messages.add_message(request, messages.INFO, 'Proram release cannot be empty', extra_tags='program_release_empty')
+        else:
             new_program = Programs(program_name=request.POST['program_name'],
                                 program_version=request.POST['program_version'],
                                 program_release=request.POST['program_release']
                                 )
             new_program.save()
-        else: 
-            messages.error(request, 'Program name cannot be empty')
     return render(request, 'static_files/add-programs.html', context=context)
 
 @staff_member_required
