@@ -10,6 +10,8 @@
   - [Creating an Admin user](#creating-an-admin-user)
   - [Managing the DB](#managing-the-db)
 - [Project Structure](#project-structure)
+- [Task Board](#task-board)
+- [Useful Commands](#useful-commands)
 
 ---
 
@@ -38,11 +40,6 @@ NOTE: please ensure you are in the repo's root directory
 ```bash
 pip install -r requirements.txt
 ```
-
-~~https://docs.djangoproject.com/en/3.0/topics/install/~~
-
-~~MySQL~~
-~~https://dev.mysql.com/doc/mysql-installation-excerpt/5.7/en/~~
 
 ---
 
@@ -153,6 +150,12 @@ python manage.py flush
 ├── exported_data.xml
 └── requirements.txt
 ```
+
+---
+
+## Task Board
+
+https://trello.com/b/smMSNTkK/cecs-544
 
 ---
 

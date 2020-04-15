@@ -233,14 +233,17 @@ def export_data(request):
             table_object = Employees.objects.all()
             employee_resource = EmployeesResource()
             dataset = employee_resource.export()
+            which_table = 'INSERT INTO "app_employees"'
         elif db_table == 'Programs':
             table_object = Programs.objects.all()
             program_resource = ProgramsResource()
             dataset = program_resource.export()
-        elif db_table == 'FunctionalAreas':
+            which_table = 'INSERT INTO "app_programs"'
+        elif db_table == 'Areas':
             table_object = FunctionalAreas.objects.all()
             area_resource = FunctionalAreasResource()
             dataset = area_resource.export()
+            which_table = 'INSERT INTO "app_functionalareas"'
         else:
             context = { 'message' : 'Please type in "Employees", "Programs", or "FunctionalAreas"'}
             return render(request, 'static_files/export.html', context=context)
@@ -261,12 +264,21 @@ def export_data(request):
             from django.core import serializers
             data = serializers.serialize('xml', table_object)
             from django.core.files import File
-            f = open('exported_data.xml', 'w')
+            f = open(db_table + '.xml', 'w')
             my_file = File(f)
             my_file.write(data)
             my_file.close()
             context = { 'message' : 'XML successfully exported!' }
         elif file_format == 'ASCII':
+            import sqlite3, os
+            project_root_dir = os.getcwd()
+            con = sqlite3.connect(project_root_dir + '/db.sqlite3')
+            with open(db_table + '.txt', 'w') as f:
+                for line in con.iterdump():
+                    if line.startswith(which_table):
+                        f.write('%s\n' % line)
+            con.close()
+        elif file_format == 'ASCII_old':
             con = sqlite3.connect('db.sqlite3')
             with open('exported_data.txt', 'w') as f:
                 for line in con.iterdump():
