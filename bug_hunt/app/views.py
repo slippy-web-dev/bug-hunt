@@ -22,7 +22,7 @@ def index(request):
 @login_required
 def new_bug(request):
     context = { 'message' : 'This is "new bug" link'}
-    return render(request, 'static_files/test.html', context=context)
+    return render(request, 'static_files/add-bug.html', context=context)
 
 @login_required
 def update_bug(request):
