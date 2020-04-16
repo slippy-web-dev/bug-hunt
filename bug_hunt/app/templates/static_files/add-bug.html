@@ -5,53 +5,35 @@
     <title>Add Areas</title>
   </head>
   <body>
-    {% if  program %}
-    <h3>Add Area to {{program.program_name}} - {{program.program_version}} - {{program.program_release}}</h3>
-    <table style="width:60%">
-    <tr>
-      <th>Area ID</th>
-      <th>Program ID</th>
-      <th>Area</th>
-      <th></th>
-    </tr>
-    {% for area in area_list %}
-    <form action="{% url 'app:edit_areas' %}" method="POST"> {% csrf_token %}
-      <tr>
-        <td>{{area.area_id}}<input type="hidden" name="area_id" value="{{area.area_id}}"></td>
-        <td>{{program.program_id}}<input type="hidden" name="program_id" value="{{program.program_id}}"></td>
-        <td><input type="text" name="area" value="{{area.area}}"></td>
-        <td><input type="submit" value="Update"></td>
-      </tr>
+    <h1>New Bug Report Entry Page</h1>
+    <form>
+      <label>Program</label>
+      <select id="program_names" name="program_names">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Programs query in <option value=""></>-->
+      </select>
+      <label>Report Type</label>
+      <select id="report_types" name="report_types">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Programs query in <option value=""></>-->
+      </select>
+      <label>Severity</label>
+      <select id="severity_levels" name="severity_levels">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Programs query in <option value=""></>-->
+      </select>
+      <br>
+      <label>Problem Summary</label>
+      <input type="text" name="problem_summary">
+      <label>Reproducible?</label>
+      <input type="checkbox" name="reducible">
+      <hr>
     </form>
-    {% endfor %}
-    <form action="{% url 'app:add_areas' %}" method="POST"> {% csrf_token %}
-      <tr>
-        <td>Add</td>
-        <td><input type="hidden" name="program_id" value="{{program.program_id}}">{{program.program_id}}</td>
-        <td><input type="text" name="area"></td>
-        <td><input type="submit" value="Add Area"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td>
-          {% if messages %}
-          <ul class="messages">
-              {% for message in messages %}
-              {% if message.tags %}
-              <li class="{{ message.tags }}">{{ message }}</li>
-              {% endif %}
-              {% endfor %} </br>
-          </ul>
-          {% endif %}
-        </td>
-      </tr>
-    </form>
-    </table>
-    <p><a href="/app/admin/edit-areas">Back</a></p>
-    <!-- figure out which html button to use for 'Done' -->
-    <!-- {% else %}
-    <p>Program list did not load.. Please check the models && views</p> -->
-    {% endif %}
   </body>
 </html>
