@@ -16,24 +16,118 @@
       </select>
       <label>Report Type</label>
       <select id="report_types" name="report_types">
-        <option value="test-1">test-1</option>
-        <option value="test-2">test-2</option>
-        <option value="test-3">test-3</option>
-        <!-- Attach results from Programs query in <option value=""></>-->
+        <option value="coding-error">Coding Error</option>
+        <option value="design-issue">Design Issue</option>
+        <option value="suggestion">Suggestion</option>
+        <option value="documentation">Documentation</option>
+        <option value="hardware">Hardware</option>
+        <option value="query">Query</option>
       </select>
       <label>Severity</label>
       <select id="severity_levels" name="severity_levels">
-        <option value="test-1">test-1</option>
-        <option value="test-2">test-2</option>
-        <option value="test-3">test-3</option>
-        <!-- Attach results from Programs query in <option value=""></>-->
+        <option value="minor">Minor</option>
+        <option value="intermediate">Intermediate</option>
+        <option value="severe">Severe</option>
       </select>
       <br>
       <label>Problem Summary</label>
       <input type="text" name="problem_summary">
       <label>Reproducible?</label>
       <input type="checkbox" name="reducible">
+      <br>
+      <label>Problem</label>
+      <input type="text" name="problem_text">
+      <br>
+      <label>Sugested Fix</label>
+      <input type="text" name="suggested_fix_text">
+      <br>
+      <label>Reported By</label>
+      <select id="reported_by" name="reported_by">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Employees query in <option value=""></>-->
+      </select>
+      <label>Date</label>
+      <input type="date" name="date_bug">
       <hr>
+      <label>Functional Area</label>
+      <select id="functional_areas" name="functional_areas">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Areas query in <option value=""></>-->
+      </select>
+      <label>Assigned To</label>
+      <select id="assigned_to" name="assigned_to">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Employees query in <option value=""></>-->
+      </select>
+      <br>
+      <label>Comments</label>
+      <input type="text" name="comments_text">
+      <br>
+      <label>Status</label>
+      <select id="status" name="status">
+        <option value="open">Open</option>
+        <option value="closed-or-open">Cloased or Open</option>
+        <option value="closed">Closed</option>
+        <option value="resolved">Resolved</option>
+      </select>
+      <label>Priority</label>
+      <input type="number" name="priority" min="1" max="6">
+      <label>Resolution</label>
+      <select id="resolution" name="resolution">
+        <option value="pending">Pending</option>
+        <option value="fixed">Fixed</option>
+        <option value="irreproducible">Irreproducible</option>
+        <option value="deferred">Deferred</option>
+        <option value="as-designed">As Designed</option>
+        <option value="withdrawn">Withdrawn by reporter</option>
+        <option value="need-more-info">Need more info</option>
+        <option value="disagree">Disagree with suggestion</option>
+        <option value="duplicate">Duplicate</option>
+      </select>
+      <label>Resolution Version</label>
+      <select id="resolution_version" name="resolution_version">
+        <option value="pending">Pending</option>
+        <option value="fixed">Fixed</option>
+        <option value="irreproducible">Irreproducible</option>
+        <option value="deferred">Deferred</option>
+        <option value="as-designed">As Designed</option>
+        <option value="withdrawn">Withdrawn by reporter</option>
+        <option value="need-more-info">Need more info</option>
+        <option value="disagree">Disagree with suggestion</option>
+        <option value="duplicate">Duplicate</option>
+        <!-- Attach results from Resolution query in <option value=""></>-->
+      </select>
+      <br>
+      <label>Resolved By</label>
+      <select id="resolved_by" name="resolved_by">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Employees query in <option value=""></>-->
+      </select>
+      <label>Date</label>
+      <input type="date" name="date_resolution">
+      <label>Tested By</label>
+      <select id="assigned_to" name="assigned_to">
+        <option value="test-1">test-1</option>
+        <option value="test-2">test-2</option>
+        <option value="test-3">test-3</option>
+        <!-- Attach results from Employees query in <option value=""></>-->
+      </select>
+      <label>Date</label>
+      <input type="date" name="date_test">
+      <label>Treat as deferred?</label>
+      <input type="checkbox" name="deferred">
+      <br>
+      <input type="submit" value="Submit">
+      <input type="reset" value="Reset">
+      <input type="button" value="Cancel"> <!-- Cancel needs to redirect to previous page-->
     </form>
   </body>
 </html>
