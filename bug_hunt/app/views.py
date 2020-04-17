@@ -37,9 +37,19 @@ def database_maintenance(request):
 @staff_member_required
 def edit_areas(request):
     if request.method == 'POST':
-        area_object = FunctionalAreas.objects.get(pk=request.POST['area_id'])
-        area_object.area = request.POST['area']
-        area_object.save()
+        if 'update' in request.POST:
+            area_object = FunctionalAreas.objects.get(pk=request.POST['area_id'])
+            area_object.area = request.POST['area']
+            area_object.save()
+            messages.add_message(request, messages.INFO, 'Area ' + area_object.area  + " has been updated", extra_tags='area_update')
+        elif 'delete' in request.POST:
+            area_id = request.POST['area_id']
+            area = request.POST['area']
+            try :
+                FunctionalAreas.objects.filter(area_id=area_id).delete()
+            except Error:
+                print(Error)
+            messages.add_message(request, messages.INFO, 'Area ' + area  + " has been deleted", extra_tags='area_delete')
         program_id = request.POST['program_id']
         program_object = Programs.objects.get(pk=program_id)
         area_list = FunctionalAreas.objects.filter(program_id=program_id)
@@ -118,7 +128,7 @@ def edit_programs(request):
                 Programs.objects.filter(program_id=program_id).delete()
             except Error:
                 print(Error) 
-            messages.add_message(request, messages.INFO, 'Program ' + program_name + "has been deleted", extra_tags='program_delete')
+            messages.add_message(request, messages.INFO, 'Program ' + program_name + " has been deleted", extra_tags='program_delete')
         # when save() is successful
     program_list = Programs.objects.all()
     context = { 'message' : 'This is "edit programs" page',
@@ -229,7 +239,7 @@ def edit_employees(request):
                 print(Error) 
             messages.add_message(request,
                 messages.INFO,
-                'User ' + employee_object.employee_username + "has been deleted",
+                'User ' + employee_object.employee_username + " has been deleted",
                 extra_tags='employee_delete')
 
     employee_list = Employees.objects.all()
