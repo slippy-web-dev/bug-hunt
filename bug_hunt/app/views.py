@@ -104,13 +104,22 @@ def add_programs(request):
 @staff_member_required
 def edit_programs(request):
     if request.method == 'POST':
-        program_object = Programs.objects.get(pk=request.POST['program_id'])
-        program_object.program_name = request.POST['program_name']
-        program_object.program_version = request.POST['program_version']
-        program_object.program_release = request.POST['program_release']
-        program_object.save()
+        if 'edit' in request.POST:
+            program_object = Programs.objects.get(pk=request.POST['program_id'])
+            program_object.program_name = request.POST['program_name']
+            program_object.program_version = request.POST['program_version']
+            program_object.program_release = request.POST['program_release']
+            program_object.save()
+            messages.info(request, 'Program ' + program_object.program_name + ' has been updated')
+        elif 'delete' in request.POST:
+            program_id =  int(request.POST['program_id'])
+            program_name = str(request.POST['program_name'])
+            try: 
+                Programs.objects.filter(program_id=program_id).delete()
+            except Error:
+                print(Error) 
+            messages.add_message(request, messages.INFO, 'Program ' + program_name + "has been deleted", extra_tags='program_delete')
         # when save() is successful
-        messages.info(request, 'Program ' + program_object.program_name + ' has been updated')
     program_list = Programs.objects.all()
     context = { 'message' : 'This is "edit programs" page',
                 'program_list' : program_list,
