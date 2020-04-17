@@ -139,18 +139,16 @@ def add_employees(request):
             messages.add_message(request, messages.INFO, "Employee password must not be empty",extra_tags='employee_password_empty')
         else:
             # new_employee.entry_set.add(this_access_level)
-            new_user = User.objects.create_user(username=request.POST['employee_username'],
-                                                password=request.POST['employee_password'],
-                                                first_name=request.POST['employee_name'],
-                                                is_staff=is_staff
-                                            )
-            new_user = User(first_name=request.POST['employee_name'],
-                            username=request.POST['employee_username'],
-                            password=request.POST['employee_password'],
-                            is_staff=is_staff
-                        )
-            new_employee.save()
-            new_employee = Employees()
+            if User.objects.filter(username=new_employee.employee_username).exists():
+                messages.add_message(request, messages.INFO, "This username has been registered", extra_tags='employee_username_empty')
+            else:    
+                new_user = User.objects.create_user(username=request.POST['employee_username'],
+                                                    password=request.POST['employee_password'],
+                                                    first_name=request.POST['employee_name'],
+                                                    is_staff=is_staff
+                                                )
+                new_employee.save()
+                new_employee = Employees()
     context = { 'message' : 'This is "add employees" page',
                 'new_employee': new_employee,
                 }
@@ -159,58 +157,72 @@ def add_employees(request):
 @staff_member_required
 def edit_employees(request):
     if request.method == 'POST':
-        is_staff = False
-        if request.POST['accesslevels'] == '3':
-            is_staff = True
-        this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
-        print(this_access_level.accesslevel)
-        employee_object = Employees.objects.get(pk=request.POST['employee_id'])
-        user_lookup_name = employee_object.employee_name
-        employee_message_info = {
-            'employee_name' : employee_object.employee_name,
-            'employee_username' : employee_object.employee_username,
-            'employee_password' : '[Encrypted]',
-            'accesslevels' : employee_object.employee_accesslevel.accesslevel
-        }
-        employee_object.employee_name = request.POST['employee_name']
-        employee_object.employee_username = request.POST['employee_username']
-        employee_object.employee_password = request.POST['employee_password']
-        employee_object.employee_accesslevel = this_access_level
+        if 'edit' in request.POST:
+            is_staff = False
+            if request.POST['accesslevels'] == '3':
+                is_staff = True
+            this_access_level = AccessLevels.objects.get(accesslevel=request.POST['accesslevels'])
+            employee_object = Employees.objects.get(pk=request.POST['employee_id'])
+            user_lookup_name = employee_object.employee_username
+            employee_message_info = {
+                'employee_name' : employee_object.employee_name,
+                'employee_username' : employee_object.employee_username,
+                'employee_password' : '[Encrypted]',
+                'accesslevels' : employee_object.employee_accesslevel.accesslevel
+            }
+            employee_object.employee_name = request.POST['employee_name']
+            employee_object.employee_username = request.POST['employee_username']
+            employee_object.employee_password = request.POST['employee_password']
+            employee_object.employee_accesslevel = this_access_level
 
-        
-        user_object = User.objects.get(first_name=user_lookup_name)
-        user_object.first_name = request.POST['employee_name']
-        user_object.username = request.POST['employee_username']
-        user_object.set_password(request.POST['employee_password'])
-        user_object.is_staff = is_staff
-        employee_object.save()
-        user_object.save()
-        # when save() is successful
-        messages.info(request, 'Employee ' + user_lookup_name + ' has been updated')
-        messages.add_message(
-            request, 
-            messages.INFO, 
-            'Name: ' + employee_message_info['employee_name'] + ' -> ' + employee_object.employee_name, 
-            extra_tags='employee_name_update'
-        )
-        messages.add_message(
-            request,
-            messages.INFO,
-            'Username: ' + employee_message_info['employee_username'] + ' -> ' + employee_object.employee_username,
-            extra_tags='employee_username_update'
-        )
-        messages.add_message(
-            request,
-            messages.INFO,
-            'Password: ' + employee_message_info['employee_password'],
-            extra_tags='employee_password_update'
-        )
-        messages.add_message(
-            request,
-            messages.INFO,
-            'Access Level: ' + employee_message_info['accesslevels'] + ' -> ' + request.POST['accesslevels'],
-            extra_tags='accesslevels_update'
-        )
+            
+            user_object = User.objects.get(username=user_lookup_name)
+            user_object.first_name = request.POST['employee_name']
+            user_object.username = request.POST['employee_username']
+            user_object.set_password(request.POST['employee_password'])
+            user_object.is_staff = is_staff
+            employee_object.save()
+            user_object.save()
+            # when save() is successful
+            messages.info(request, 'Employee ' + user_lookup_name + ' has been updated')
+            messages.add_message(
+                request, 
+                messages.INFO, 
+                'Name: ' + employee_message_info['employee_name'] + ' -> ' + employee_object.employee_name, 
+                extra_tags='employee_name_update'
+            )
+            messages.add_message(
+                request,
+                messages.INFO,
+                'Username: ' + employee_message_info['employee_username'] + ' -> ' + employee_object.employee_username,
+                extra_tags='employee_username_update'
+            )
+            messages.add_message(
+                request,
+                messages.INFO,
+                'Password: ' + employee_message_info['employee_password'],
+                extra_tags='employee_password_update'
+            )
+            messages.add_message(
+                request,
+                messages.INFO,
+                'Access Level: ' + employee_message_info['accesslevels'] + ' -> ' + request.POST['accesslevels'],
+                extra_tags='accesslevels_update'
+            )
+
+        elif 'delete' in request.POST:
+            employee_object = Employees.objects.get(pk=request.POST['employee_id'])
+            employee_id =  int(request.POST['employee_id'])
+            try: 
+                Employees.objects.filter(employee_id=employee_id).delete()
+                User.objects.filter(username=employee_object.employee_username).delete()
+            except Error:
+                print(Error) 
+            messages.add_message(request,
+                messages.INFO,
+                'User ' + employee_object.employee_username + "has been deleted",
+                extra_tags='employee_delete')
+
     employee_list = Employees.objects.all()
     context = { 'message' : 'This is "edit employees" page',
                 'employee_list' : employee_list,
