@@ -1,15 +1,15 @@
 from django.shortcuts import render
-from django.http import HttpResponse
+from django.http import HttpResponse, JsonResponse
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from tablib import Dataset
 from django.contrib import messages
 
-from .models import Employees, FunctionalAreas, Programs, AccessLevels
+from .models import Employees, FunctionalAreas, Programs, AccessLevels, BugReports, ReportTypes, Severities, Status, Priorities, Resolutions
 from .resources import EmployeesResource, FunctionalAreasResource, ProgramsResource
 
-import sqlite3, re
+import sqlite3, re, json
 
 # Create your views here.
 @login_required
@@ -18,11 +18,6 @@ def index(request):
     # test_object = { 'test' : 7 }
     context = { 'is_admin' : is_admin }
     return render(request, 'static_files/home.html', context=context)
-
-@login_required
-def new_bug(request):
-    context = { 'message' : 'This is "new bug" link'}
-    return render(request, 'static_files/test.html', context=context)
 
 @login_required
 def update_bug(request):
@@ -340,3 +335,69 @@ def export_data(request):
             context = { 'message' : 'Please type in one of the following choices: CSV, JSON, XLS (Excel), XML'}
             return render(request, 'static_files/export.html', context=context)
     return render(request, 'static_files/export.html', context=context)
+
+@login_required
+def new_bug(request):
+    # get all lists for dropdown
+    program_list = Programs.objects.all()
+    report_type_list = ReportTypes.objects.all()
+    severity_list = Severities.objects.all()
+    employee_list = Employees.objects.all()
+    default_report_by = str(request.user)
+    area_list = FunctionalAreas.objects.all()
+    status_list = Status.objects.all()
+    priority_list = Priorities.objects.all()
+    resolution_list = Resolutions.objects.all()
+    if request.method == 'GET':
+        new_bug = BugReports()
+    elif request.method == 'POST':
+        # try save(), except error
+        new_bug = BugReports(request.POST['bug_id'], 
+            request.POST['program_id'],
+            request.POST['type_id'],
+            request.POST['severity_id'],
+            request.POST['summary'],
+            request.POST['reproducable'],
+            request.POST['description'],
+            request.POST['suggested_fix'],
+            request.POST['reported_by_emp_id'],
+            request.POST['reported_on_date'],
+            request.POST['functional_area'],
+            request.POST['assigned_to_emp_id'],
+            request.POST['comments'],
+            request.POST['status'],
+            request.POST['priority'],
+            request.POST['resolution'],
+            request.POST['resolution_version'],
+            request.POST['resolved_by_emp_id'],
+            request.POST['resolved_on_date'],
+            request.POST['tested_by_emp_id'],
+            request.POST['tested_on_date'],
+            request.POST['treat_as_deferred'])
+        # checking all fields are valid to save
+        if True:
+            try:
+                new_bug.save()
+            except Error:
+                print(Error)
+        else:
+            messages.add_message(request,
+            messages.INFO,
+            'Invalid input messages',
+            extra_tags='invalid_input')
+        # else return message    
+    context = { 'message' : 'This is "add new bug" page',
+    'programs': program_list,
+    'report_type': report_type_list,
+    'severity': severity_list,
+    'employees': employee_list,
+    'areas': area_list,
+    'status': status_list,
+    'priority': priority_list,
+    'resolution': resolution_list}
+    return render(request, 'static_files/add-bugs.html', context=context)
+
+def load_areas(request):
+    program_id = request.GET.get('program_id')
+    area_list = FunctionalAreas.objects.filter(program_id=program_id).values()
+    return JsonResponse({"areas": list(area_list)})

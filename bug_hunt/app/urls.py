@@ -17,4 +17,5 @@ urlpatterns = [
     path('admin/add-employees/', views.add_employees, name='add_employees'),
     path('admin/edit-employees/', views.edit_employees, name='edit_employees'),
     path('admin/export-data/', views.export_data, name='export_data'),
+    path('load-areas/', views.load_areas, name='load_areas'),
 ]
