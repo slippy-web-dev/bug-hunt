@@ -48,7 +48,7 @@
             <ul class="messages">
               {% for message in messages %}
               {% if message.tags %}
-              <li class="{{ message.tags }}">{{ message }}</li>
+              <li class="{{ message.tags }} alert alert-warning fit-ct">{{ message }}</li>
               {% endif %}
               {% endfor %} </br>
             </ul>

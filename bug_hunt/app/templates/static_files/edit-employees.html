@@ -1,53 +1,77 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/4.7.0/css/font-awesome.min.css">
 <html>
   <head>
     <meta charset="utf-8">
     <title>Edit Employees</title>
   </head>
   <body>
-    {% if  employee_list %}
-    <p>Edit an Employee</p>
-    {% if messages %}
-      {% for message in messages %}
-        <li>{{ message }}</li>
-      {% endfor %} 
-    {% endif %}
-    <table style="width:30%" >
-    {% for employee in employee_list %}
-    <form action="{% url 'app:edit_employees' %}" method="POST"> {% csrf_token %}
-      <input type="hidden" name="employee_id" value="{{ employee.employee_id }}">
-      <tr>
-        <td>
-          <label for="employee_name">Name </label>
-          <input type="text" name="employee_name" value="{{ employee.employee_name }}"> </br></br>
-        </td>
-        <td>
-          <label for="employee_username">Username </label>
-          <input type="text" name="employee_username" value="{{ employee.employee_username }}"></br></br>
-        </td>
-        <td>
-          <label for="employee_password">Password </label>
-          <input type="password" name="employee_password" value="{{ employee.employee_password }}"></br></br>
-        </td>
-        <td>
-          <label for="accesslevels">Access Level</label> 
-          <input type="number" name="accesslevels" min="1" max="3" value="{{ employee.employee_accesslevel.accesslevel }}"></br></br>
-        </td>
-        <td>
-          <input type="submit" name="edit" value="Submit">
-          <input type="submit" name="delete" value="Delete" onclick="confirm_delete(event)">
-        </td>
-      </tr>
-    </form>
-    {% endfor %}
-    </table>
-    {% endif %}
-    
-    <a href="/app/admin/db-maintenance">Back</a>
-    <script>
-      function confirm_delete() {
-        if(!confirm('Are you sure?'))e.preventDefault();
-      }
-    </script>
+    <div class="container vertical-margin">
+      {% if  employee_list %}
+      <p>Edit an Employee</p>
+      
+      {% if messages %}
+      <div class="alert alert-warning fit-ct">
+        {% for message in messages %}
+          <li>{{ message }}</li><br>
+        {% endfor %} 
+      </div>
+      {% endif %}
+     
+      <table class="table" >
+      {% for employee in employee_list %}
+      <form action="{% url 'app:edit_employees' %}" method="POST"> {% csrf_token %}
+        <input class="form-control fit-ct" type="hidden" name="employee_id" value="{{ employee.employee_id }}">
+        <tr>
+          <td>
+            <label for="employee_name">Name </label>
+            <input class="form-control fit-ct" type="text" name="employee_name" value="{{ employee.employee_name }}"> </br></br>
+          </td>
+          <td>
+            <label for="employee_username">Username </label>
+            <input class="form-control fit-ct" type="text" name="employee_username" value="{{ employee.employee_username }}"></br></br>
+          </td>
+          <td>
+            <label for="employee_password">Password </label>
+            <div class="input-group">
+              <input class="form-control fit-ct" type="password" name="employee_password" value="{{ employee.employee_password }}" data-toggle="password">
+              <div class="input-group-append">
+                <div class="input-group-text"><i class="fa fa-eye"></i></div>
+              </div>
+            </div>
+          </br></br>
+          </td>
+          <td>
+            <label for="accesslevels" class="text-nowrap">Access Level</label> 
+            <input class="form-control fit-ct" type="number" name="accesslevels" min="1" max="3" value="{{ employee.employee_accesslevel.accesslevel }}"></br></br>
+          </td>
+          <td>
+            <label class="label-min-height" for="submit_btn"></label> 
+            <input class="form-control btn btn-outline-primary" type="submit" name="edit" value="Submit"> 
+          </td>
+          <td>
+            <label class="label-min-height" for="delete_btn"></label> 
+            <input class="form-control btn btn-outline-danger" type="submit" name="delete" value="Delete" onclick="confirm_delete(event)">
+          </td>
+        </tr>
+      </form>
+      {% endfor %}
+      </table>
+      {% endif %}
+      
+      <hr>
+      <a href="/app/admin/db-maintenance">
+        <button type="button" class="btn btn-outline-secondary">Back</button>
+      </a>
+      <script>
+        function confirm_delete() {
+          if(!confirm('Are you sure?'))e.preventDefault();
+        }
+      </script>
+    </div>
   </body>
 </html>

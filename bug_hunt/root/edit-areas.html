@@ -1,24 +1,32 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
   <head>
     <meta charset="utf-8">
     <title>Edit Areas</title>
   </head>
   <body>
+    <br>
+    <div class="container">
     {% if  program_list %}
-    <table style="width:60%">
+    <table class="table">
       <tr>
-        <th>Program ID</th>
-        <th>Program Name</th>
-        <th>Version</th>
-        <th>Release</th>
+        <th class="text-center">Program ID</th>
+        <th class="text-center">Program Name</th>
+        <th class="text-center">Version</th>
+        <th class="text-center">Release</th>
       </tr>
       {% for program in program_list %}
       <tr>
-        <td><a href="{% url 'app:add_areas' %}?program_id={{program.program_id}}">{{program.program_id}}</a></td>
-        <td>{{program.program_name}}</td>
-        <td>{{program.program_version}}</td>
-        <td>{{program.program_release}}</td>
+        <td class="text-center"><a href="{% url 'app:add_areas' %}?program_id={{program.program_id}}" 
+          class="badge badge-pill badge-primary badge-outline program-select">{{program.program_id}}</a></td>
+        <td class="text-center">{{program.program_name}}</td>
+        <td class="text-center">{{program.program_version}}</td>
+        <td class="text-center">{{program.program_release}}</td>
+        
       </tr>
       {% endfor %}
     </table>
@@ -26,6 +34,9 @@
     <p>There are no programs. You cannot add areas.</p>
     {% endif %}
 
-    <p><a href="/app/admin/db-maintenance">Back</a></p>
+    <a href="/app/admin/db-maintenance">
+      <button type="button" class="btn btn-outline-secondary">Back</button>
+    </a>
+  </div>
   </body>
 </html>

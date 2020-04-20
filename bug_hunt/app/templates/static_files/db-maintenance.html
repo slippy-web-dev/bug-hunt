@@ -1,21 +1,28 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
   <head>
     <meta charset="utf-8">
     <title>DB Admin Page</title>
   </head>
   <body>
-    <h1>
-      Database Maintenance
-    </h1>
-    <ul>
-      <li><a href="{% url 'app:edit_areas' %}">Edit / Add Areas</a></li>
-      <li><a href="{% url 'app:add_programs' %}">Add Programs</a></li>
-      <li><a href="{% url 'app:edit_programs' %}">Edit Programs</a></li>
-      <li><a href="{% url 'app:add_employees' %}">Add Employees</a></li>
-      <li><a href="{% url 'app:edit_employees' %}">Edit Employees</a></li>
-      <li><a href="{% url 'app:export_data' %}">Export Data</a></li>
-      <li><a href="{% url 'app:index' %}">Back</a></li>
-    </ul>
+    <div class="container vertical-margin">
+      <h3>
+        Database Maintenance
+      </h3>
+      <br>
+      <div class="list-group half-width">
+        <a class="list-group-item list-group-item-action " href="{% url 'app:edit_areas' %}" >Edit / Add Areas</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:add_programs' %}">Add Programs</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:edit_programs' %}">Edit Programs</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:add_employees' %}">Add Employees</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:edit_employees' %}">Edit Employees</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:export_data' %}">Export Data</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:index' %}">Back</a>
+      </div>
+  </div>
   </body>
 </html>

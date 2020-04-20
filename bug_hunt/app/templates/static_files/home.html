@@ -1,20 +1,27 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
   <head>
     <meta charset="utf-8">
     <title>Bughound Start Page</title>
   </head>
   <body>
-    <h1>
-      Welcome to BugHound
-    </h1>
-    <ul>
-      <li><a href="{% url 'app:new_bug' %}">Enter a NEW Bug</a></li>
-      <li><a href="{% url 'app:update_bug' %}">Update EXISTING Bug</a></li>
-      {% if is_admin %}
-      <li><a href="{% url 'app:database_maintenance' %}">Database Maintenance</a></li>
-      {% endif %}
-      <li><a href="{% url 'app:logout' %}">Logout</a></li>
-    </ul>
+    <div class="container vertical-margin">
+      <h2>
+        Welcome to BugHound
+      </h2>
+      <br>
+      <div class="list-group half-width">
+        <a class="list-group-item list-group-item-action " href="{% url 'app:new_bug' %}">Enter a NEW Bug</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:update_bug' %}">Update EXISTING Bug</a>
+        {% if is_admin %}
+        <a class="list-group-item list-group-item-action " href="{% url 'app:database_maintenance' %}">Database Maintenance</a>
+        {% endif %}
+        <a class="list-group-item list-group-item-action " href="{% url 'app:logout' %}">Logout</a>
+      </div>
+    </div>
   </body>
 </html>

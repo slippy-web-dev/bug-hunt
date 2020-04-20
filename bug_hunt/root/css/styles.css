@@ -26,21 +26,6 @@
 }
 
 .vertical-margin{
-    margin-top: 1rem;
-    margin-bottom: 2rem;
-}
-
-.label-min-height{
-    min-height: 18px;
-}
-
-.maintain-select{
-    padding-left: 3em;
-    padding-right: 3em;
-    padding-top: 1em;
-    padding-bottom: 1em;
-}
-
-.half-width{
-    width: 50%;
+    margin-top: 5rem;
+    margin-bottom: 5rem;
 }
