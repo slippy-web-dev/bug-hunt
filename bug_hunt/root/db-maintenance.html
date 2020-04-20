@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>DB Admin Page</title>
+  </head>
+  <body>
+    <h1>
+      Database Maintenance
+    </h1>
+    <ul>
+      <li><a href="{% url 'app:edit_areas' %}">Edit / Add Areas</a></li>
+      <li><a href="{% url 'app:add_programs' %}">Add Programs</a></li>
+      <li><a href="{% url 'app:edit_programs' %}">Edit Programs</a></li>
+      <li><a href="{% url 'app:add_employees' %}">Add Employees</a></li>
+      <li><a href="{% url 'app:edit_employees' %}">Edit Employees</a></li>
+      <li><a href="{% url 'app:export_data' %}">Export Data</a></li>
+      <li><a href="{% url 'app:index' %}">Back</a></li>
+    </ul>
+  </body>
+</html>

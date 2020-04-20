@@ -1,57 +1,71 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
-  <head>
-    <meta charset="utf-8">
-    <title>Add Areas</title>
-  </head>
-  <body>
+
+<head>
+  <meta charset="utf-8">
+  <title>Add Areas</title>
+</head>
+
+<body>
+  <div class="container">
     {% if  program %}
-    <h3>Add Area to {{program.program_name}} - {{program.program_version}} - {{program.program_release}}</h3>
-    <table style="width:60%">
-    <tr>
-      <th>Area ID</th>
-      <th>Program ID</th>
-      <th>Area</th>
-      <th></th>
-    </tr>
-    {% for area in area_list %}
-    <form action="{% url 'app:edit_areas' %}" method="POST"> {% csrf_token %}
+    <h5 class="message-change">Add Area to {{program.program_name}} - {{program.program_version}} - {{program.program_release}}</h5>
+    <br>
+    <table class="table"">
       <tr>
-        <td>{{area.area_id}}<input type="hidden" name="area_id" value="{{area.area_id}}"></td>
-        <td>{{program.program_id}}<input type="hidden" name="program_id" value="{{program.program_id}}"></td>
-        <td><input type="text" name="area" value="{{area.area}}"></td>
-        <td><input type="submit" name="update" value="Update"><input type="submit" name="delete" value="Delete"></td>
+        <th class="text-center">Area ID</th>
+        <th class="text-center">Program ID</th>
+        <th class="text-center">Area</th>
+        <th></th>
       </tr>
-    </form>
-    {% endfor %}
-    <form action="{% url 'app:add_areas' %}" method="POST"> {% csrf_token %}
-      <tr>
-        <td>Add</td>
-        <td><input type="hidden" name="program_id" value="{{program.program_id}}">{{program.program_id}}</td>
-        <td><input type="text" name="area"></td>
-        <td><input type="submit" value="Add Area"></td>
-      </tr>
-      <tr>
-        <td></td>
-        <td></td>
-        <td>
-          {% if messages %}
-          <ul class="messages">
+      {% for area in area_list %}
+      <form action=" {% url 'app:edit_areas' %}" method="POST"> {% csrf_token %}
+        <tr>
+          <td class="text-center">{{area.area_id}}<input type="hidden" name="area_id" value="{{area.area_id}}"></td>
+          <td class="text-center">{{program.program_id}}<input type="hidden" name="program_id" value="{{program.program_id}}"></td>
+          <td class="text-center"><input type="text" name="area" value="{{area.area}}" class="form-control input"></td>
+          <td class="text-center"><input type="submit" name="update" value="Update" class="btn btn-outline-primary"></td>
+          <td class="text-center"><input type="submit" name="delete" value="Delete" class="btn btn-outline-danger"></td>
+        </tr>
+      </form>
+      {% endfor %}
+      <form action="{% url 'app:add_areas' %}" method="POST"> {% csrf_token %}
+        <tr>
+          <td class="text-center bold font-weight-bold">Add</td>
+          <td class="text-center"><input type="hidden" name="program_id" value="{{program.program_id}}">{{program.program_id}}</td>
+          <td class="text-center"><input type="text" name="area" class="form-control input"></td>
+          <td class="text-center"><input type="submit" value="Add Area" class="btn btn-outline-primary"></td>
+        </tr>
+        <tr>
+          <td></td>
+          <td></td>
+          <td>
+            {% if messages %}
+            <ul class="messages">
               {% for message in messages %}
               {% if message.tags %}
               <li class="{{ message.tags }}">{{ message }}</li>
               {% endif %}
               {% endfor %} </br>
-          </ul>
-          {% endif %}
-        </td>
-      </tr>
-    </form>
+            </ul>
+            {% endif %}
+          </td>
+        </tr>
+      </form>
     </table>
-    <p><a href="/app/admin/edit-areas">Back</a></p>
+    
+    <a href="/app/admin/edit-areas">
+      <button type="button" class="btn btn-outline-secondary">Back</button>
+    </a>
     <!-- figure out which html button to use for 'Done' -->
     <!-- {% else %}
     <p>Program list did not load.. Please check the models && views</p> -->
     {% endif %}
-  </body>
+  </div>
+</body>
+
 </html>

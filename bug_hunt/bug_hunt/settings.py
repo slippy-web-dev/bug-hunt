@@ -124,6 +124,11 @@ USE_TZ = True
 
 STATIC_URL = '/static/'
 
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'app/templates/static_files'),
+    os.path.join(BASE_DIR, 'bootstrap'),
+]
+
 # User stuff
 DEFAULT_FILE_STORAGE = '/out/'
 IMPORT_EXPORT_USE_TRANSACTIONS = True
