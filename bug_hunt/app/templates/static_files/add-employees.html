@@ -12,6 +12,13 @@
     <div class="container">
       <br>
       <p>Add an Employee</p>
+      {% if messages %}
+            {% for message in messages %}
+              {% if 'employee_add_success' in message.extra_tags %} 
+                <li class="alert alert-success fit-ct">{{ message }}</li></br>
+              {% endif %}
+            {% endfor %} 
+        {% endif %}
       <form action="{% url 'app:add_employees' %}" method="POST"> {% csrf_token %}
         <label for="employee_name">Name </label>
         <input class="form-control fit-ct"  type="text" name="employee_name" value="{{ new_employee.employee_name }}"> </br></br>
@@ -26,7 +33,7 @@
         <input class="form-control fit-ct" type="text" name="employee_username" value="{{ new_employee.employee_username }}"></br></br>
         {% if messages %}
             {% for message in messages %}
-              {% if 'employee_username_empty' in message.extra_tags %} 
+              {% if 'employee_username_error' in message.extra_tags %} 
                 <li class="alert alert-warning fit-ct">{{ message }}</li></br>
               {% endif %}
             {% endfor %} 

@@ -12,19 +12,27 @@
     <div class="container">
     <br>
     <p>Add a Program</p>
+    {% if messages %}
+        {% for message in messages %}
+          {% if 'program_add_success' in message.extra_tags %}
+          <li class="alert alert-success fit-ct">{{ message }}</li>
+           </br>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
     <form action="{% url 'app:add_programs' %}" method="POST"> {% csrf_token %}
       <label for="program_name">Program Name </label>
-      <input class="form-control fit-ct" type="text" name="program_name"> <br>
+      <input class="form-control fit-ct" type="text" name="program_name" value="{{ new_program.program_name }}"> <br>
       {% if messages %}
         {% for message in messages %}
-          {% if 'program_name_empty' in message.extra_tags %}
+          {% if 'program_name_error' in message.extra_tags %}
           <li class="alert alert-warning fit-ct">{{ message }}</li>
            </br>
           {% endif %}
         {% endfor %}
       {% endif %}
       <label for="program_version">Program Version </label>
-      <input class="form-control fit-ct" type="text" name="program_version"> <br>
+      <input class="form-control fit-ct" type="text" name="program_version" value="{{ new_program.program_version }}"> <br>
       {% if messages %}
         {% for message in messages %}
           {% if 'program_version_empty' in message.extra_tags %}
@@ -34,7 +42,7 @@
         {% endfor %}
       {% endif %}
       <label for="program_release">Program Release </label>
-      <input class="form-control fit-ct" type="text" name="program_release"><br>
+      <input class="form-control fit-ct" type="text" name="program_release" value="{{ new_program.program_release }}"><br>
       {% if messages %}
         {% for message in messages %}
           {% if 'program_release_empty' in message.extra_tags %}

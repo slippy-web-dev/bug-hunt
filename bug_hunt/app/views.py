@@ -86,24 +86,29 @@ def add_areas(request):
 
 @staff_member_required
 def add_programs(request):
-    program_list = Programs.objects.all()
-    context = { 'message' : 'This is "add programs" page',
-                'program_list' : program_list,
-              }
+    if request.method == 'GET':
+        new_program = Programs()
     if request.method == 'POST':
-        
+        new_program = Programs(program_name=request.POST['program_name'],
+                    program_version=request.POST['program_version'],
+                    program_release=request.POST['program_release']
+                    )
         if len(request.POST['program_name']) == 0: 
-            messages.add_message(request, messages.INFO, 'Program name cannot be empty', extra_tags='program_name_empty')
-        elif len(request.POST['program_version']) == 0:
+            messages.add_message(request, messages.INFO, 'Program name cannot be empty', extra_tags='program_name_error')
+        if len(request.POST['program_version']) == 0:
             messages.add_message(request, messages.INFO, 'Program version cannot be empty', extra_tags='program_version_empty')
-        elif len(request.POST['program_release']) == 0:
+        if len(request.POST['program_release']) == 0:
             messages.add_message(request, messages.INFO, 'Proram release cannot be empty', extra_tags='program_release_empty')
-        else:
-            new_program = Programs(program_name=request.POST['program_name'],
-                                program_version=request.POST['program_version'],
-                                program_release=request.POST['program_release']
-                                )
-            new_program.save()
+        if Programs.objects.filter(program_name=new_program.program_name).exists():
+            messages.add_message(request, messages.INFO, 'Program name is duplicate', extra_tags='program_name_error')
+        if  len(list(messages.get_messages(request))) == 0:
+            try:
+                new_program.save()
+            except Error:
+                print(Error)
+            messages.add_message(request, messages.INFO, 'Program ' + new_program.program_name + ' has been added successfully', extra_tags='program_add_success')
+            new_program = Programs()
+    context = {'new_program': new_program}
     return render(request, 'static_files/add-programs.html', context=context)
 
 @staff_member_required
@@ -147,22 +152,27 @@ def add_employees(request):
                                 )
         if len(request.POST['employee_name']) == 0:
             messages.add_message(request, messages.INFO, "Employee name must not be empty",extra_tags='employee_name_empty')
-        elif len(request.POST['employee_username']) == 0:
-            messages.add_message(request, messages.INFO, "Employee username must not be empty",extra_tags='employee_username_empty')
-        elif len(request.POST['employee_password']) == 0:
+        if len(request.POST['employee_username']) == 0:
+            messages.add_message(request, messages.INFO, "Employee username must not be empty",extra_tags='employee_username_error')
+        if len(request.POST['employee_password']) == 0:
             messages.add_message(request, messages.INFO, "Employee password must not be empty",extra_tags='employee_password_empty')
-        else:
-            # new_employee.entry_set.add(this_access_level)
-            if User.objects.filter(username=new_employee.employee_username).exists():
-                messages.add_message(request, messages.INFO, "This username has been registered", extra_tags='employee_username_empty')
-            else:    
+        if User.objects.filter(username=new_employee.employee_username).exists():
+            messages.add_message(request, messages.INFO, "This username has been registered", extra_tags='employee_username_error') 
+        if len(list(messages.get_messages(request))) == 0: 
+            # new_employee.entry_set.add(this_access_level) 
+            try:
                 new_user = User.objects.create_user(username=request.POST['employee_username'],
                                                     password=request.POST['employee_password'],
                                                     first_name=request.POST['employee_name'],
                                                     is_staff=is_staff
                                                 )
                 new_employee.save()
-                new_employee = Employees()
+            except Error:
+                print(Error)
+            messages.add_message(request, messages.INFO, 
+                "Employee's username" + new_employee.employee_username + " has been added successfully",
+                extra_tags='employee_add_success')
+            new_employee = Employees()
     context = { 'message' : 'This is "add employees" page',
                 'new_employee': new_employee,
                 }
