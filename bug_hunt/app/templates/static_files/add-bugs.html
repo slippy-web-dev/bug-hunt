@@ -1,198 +1,249 @@
 <!DOCTYPE html>
+<!-- {% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}"> -->
 <html>
     <head>
         <meta charset="utf-8">
         <title>Add BugReports</title>
     </head>
     <body>
-        <form action="{% url 'app:new_bug' %}" method="POST"> {% csrf_token %}
-            <tr>
-                <td><label for="program">Program</label></td>
-                <td> 
-                    <select id="program" onchange="load_areas()" style="margin-right:5rem;">
-                        <option value="">------------</option>
-                        {% for p in programs %}
-                        <option value="{{ p.program_id }}">{{ p.program_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
+        <br>
+        {% if messages %}
+            {% for message in messages %}
+                {% if 'bug_add_success' in message.extra_tags %}
+                <span>{{ message }}</span>
+                {% endif %}
+            {% endfor %}
+        {% endif %}
+        <br>
+        <br>
+        <div class="container">
+            <form action="{% url 'app:new_bug' %}" method="POST"> {% csrf_token %}
+                <tr>
+                    <td><label for="program">Program</label></td>
+                    <td> 
+                        <select id="program" onchange="load_areas()" style="margin-right:5rem;" name="program">
+                            <option value="">------------</option>
+                            {% for p in programs %}
+                            <option value="{{ p.program_id }}">{{ p.program_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
 
-                <td><label for="report">Report Type</label></td>
-                <td>
-                    <select id="report" style="margin-right:5rem;">
-                        <option value="">--------------</option>
-                        {% for rt in report_type %}
-                        <option value="{{ rt.report_type_id }}">{{ rt.report_type }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
+                    <td><label for="report">Report Type</label></td>
+                    <td>
+                        <select id="report" style="margin-right:5rem;" name="report">
+                            <option value="">--------------</option>
+                            {% for rt in report_type %}
+                            <option value="{{ rt.report_type_id }}">{{ rt.report_type }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
 
-                <td><label for="severity">Severity</label></td>
-                <td>
-                    <select id="severity">
-                        <option value="">----------------</option>
-                        {% for st in severity %}
-                        <option value="{{ st.severity_id }}">{{ st.severity }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="summary">Problem Summary</label></td>
-                <td><input type="text" id="summary"  style="margin-right:5rem;"></td>
-                <td><label for="reproducibe_checkbox">Reproducible ?</label></td>
-                <td><input id="reproducibe_checkbox" type="checkbox"></td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="problem">Problem</label></td>
-                <td><textarea id="problem" rows="3" cols="70"></textarea></td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="suggest_fix">Suggested Fix</label></td>
-                <td><textarea id="suggest_fix" rows="3" cols="70"></textarea></td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="reported_by">Reported By</label></td>
-                <td>
-                    <select id="reported_by" style="margin-right:5rem;">
-                        <option value=""></option>
-                        {% for e in employees %}
-                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><label for="date">Date</label></td>
-                <td><input id="date" type="date" ></td>
-            </tr>
-            <br><br>
-            <hr>
-            <br>
-            <tr>
-                <td><label for="area">Functional Area</label></td>
-                <td>
-                    <select id="area" style="margin-right:5rem;">
-                        <option value=""></option>
-                        <!-- {% for a in areas %}
-                        <option value="{{ a.area_id }}">{{ a.area }}</option>
-                        {% endfor %} -->
-                    </select>
-                </td>
+                    <td><label for="severity">Severity</label></td>
+                    <td>
+                        <select id="severity" name="severity">
+                            <option value="">----------------</option>
+                            {% for st in severity %}
+                            <option value="{{ st.severity_id }}">{{ st.severity }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <br><br>
+                <tr>
+                    <td><label></label></td>
+                    <td>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if 'program_name_error' in message.extra_tags %}
+                                <span>{{ message }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if 'report_type_error' in message.extra_tags %}
+                                <span>{{ message }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %}
+                    </td>
+                    <td>
+                        {% if messages %}
+                            {% for message in messages %}
+                                {% if 'severity_error' in message.extra_tags %}
+                                <span>{{ message }}</span>
+                                {% endif %}
+                            {% endfor %}
+                        {% endif %} 
+                    </td>
+                </tr>
+                <br>
+                <tr>
+                    <td><label for="summary">Problem Summary</label></td>
+                    <td><input type="text" id="summary"  style="margin-right:5rem;" name="summary"></td>
+                    <td><label for="reproducibe_checkbox">Reproducible ?</label></td>
+                    <td><input id="reproducibe_checkbox" type="checkbox" name="reproducible"></td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <td><label for="problem">Problem</label></td>
+                    <td><textarea id="problem" rows="3" cols="70" name="problem"></textarea></td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <td><label for="suggest_fix">Suggested Fix</label></td>
+                    <td><textarea id="suggest_fix" rows="3" cols="70" name="suggest_fix"></textarea></td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <td><label for="reported_by">Reported By</label></td>
+                    <td>
+                        <select id="reported_by" style="margin-right:5rem;" name="reported_by">
+                            <option value=""></option>
+                            {% for e in employees %}
+                            <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><label for="date_report">Date</label></td>
+                    <td><input id="date_report" type="date" name="date_report"></td>
+                </tr>
+                <br><br>
+                <hr>
+                <br>
+                <tr>
+                    <td><label for="area">Functional Area</label></td>
+                    <td>
+                        <select id="area" style="margin-right:5rem;" name="area">
+                            <option value=""></option>
+                            <!-- {% for a in areas %}
+                            <option value="{{ a.area_id }}">{{ a.area }}</option>
+                            {% endfor %} -->
+                        </select>
+                    </td>
 
-                <td><label for="assigned_to">Assigned To</label></td>
-                <td>
-                    <select id="assigned_to">
-                        <option value=""></option>
-                        {% for e in employees %}
-                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="comment">Comments</label></td>
-                <td><textarea id="comment" rows="3" cols="70"></textarea></td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="status">Status</label></td>
-                <td>
-                    <select id="status" style="margin-right:5rem;">
-                        <option value=""></option>
-                        {% for s in status %}
-                        <option value="{{ s.status_id }}">{{ s.status }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
+                    <td><label for="assigned_to">Assigned To</label></td>
+                    <td>
+                        <select id="assigned_to" name="assigned_to">
+                            <option value=""></option>
+                            {% for e in employees %}
+                            <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <td><label for="comment">Comments</label></td>
+                    <td><textarea id="comment" rows="3" cols="70" name="comment"></textarea></td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <td><label for="status">Status</label></td>
+                    <td>
+                        <select id="status" style="margin-right:5rem;" name="status">
+                            <option value=""></option>
+                            {% for s in status %}
+                            <option value="{{ s.status_id }}">{{ s.status }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
 
-                <td><label for="priority">Priority</label></td>
-                <td>
-                    <select id="priority" style="margin-right:5rem;">
-                        <option value=""></option>
-                        {% for p in priority %}
-                        <option value="{{ p.priority_id }}">{{ p.priority }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
+                    <td><label for="priority">Priority</label></td>
+                    <td>
+                        <select id="priority" style="margin-right:5rem;" name="priority">
+                            <option value=""></option>
+                            {% for p in priority %}
+                            <option value="{{ p.priority_id }}">{{ p.priority }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
 
-                <td><label for="resolution">Resolution</label></td>
-                <td>
-                    <select id="resolution" style="margin-right:5rem;">
-                        <option value=""></option>
-                        {% for r in resolution %}
-                        <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td>
-                    <label for="resolution_version">Resolution version</label>
-                </td>
-                <td>
-                    <input type="text" id="resolution_version">
-                </td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <td><label for="resolved_by">Resolved By</label></td>
-                <td>
-                    <select id="resolved_by" style="margin-right:5rem;">
-                        <option value=""></option>
-                        {% for e in employees %}
-                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><label for="date_resolved">Date</label></td>
-                <td><input id="date_resolved" type="date" style="margin-right:5rem;"></td>
+                    <td><label for="resolution">Resolution</label></td>
+                    <td>
+                        <select id="resolution" style="margin-right:5rem;" name="resolution">
+                            <option value=""></option>
+                            {% for r in resolution %}
+                            <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td>
+                        <label for="resolution_version">Resolution version</label>
+                    </td>
+                    <td>
+                        <select id="resolution_version" style="margin-right:5rem;" name="resolution_version">
+                            <option value=""></option>
+                            {% for r in resolution %}
+                            <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <td><label for="resolved_by">Resolved By</label></td>
+                    <td>
+                        <select id="resolved_by" style="margin-right:5rem;" name="resolved_by">
+                            <option value=""></option>
+                            {% for e in employees %}
+                            <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><label for="date_resolved">Date</label></td>
+                    <td><input id="date_resolved" type="date" style="margin-right:5rem;" name="date_resolved"></td>
 
-                <td><label for="tested_by">Tested By</label></td>
-                <td>
-                    <select id="tested_by" style="margin-right:5rem;">
-                        <option value=""></option>
-                        {% for e in employees %}
-                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-                <td><label for="date_tested">Date</label></td>
-                <td><input id="date_tested" type="date" style="margin-right:2rem;" ></td>
+                    <td><label for="tested_by">Tested By</label></td>
+                    <td>
+                        <select id="tested_by" style="margin-right:5rem;" name="tested_by">
+                            <option value=""></option>
+                            {% for e in employees %}
+                            <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                            {% endfor %}
+                        </select>
+                    </td>
+                    <td><label for="date_tested">Date</label></td>
+                    <td><input id="date_tested" type="date" style="margin-right:2rem;" name="date_tested"></td>
 
-                <td><label for="deferred_checkbox">Treat as Deferred ?</label></td>
-                <td><input id="deferred_checkbox" type="checkbox"></td>
-            </tr>
-            <br><br><br>
-            <tr>
-                <input type="submit" name="submit" value="Submit">
-                <input type="reset" name="reset" value="Reset">
-                <input type="button" name="cancel" value="Cancel" onclick="go_index()">
-            </tr>
-        </form>
+                    <td><label for="deferred_checkbox">Treat as Deferred ?</label></td>
+                    <td><input id="deferred_checkbox" type="checkbox" name="deferred"></td>
+                </tr>
+                <br><br><br>
+                <tr>
+                    <input type="submit" name="submit" value="Submit">
+                    <input type="reset" name="reset" value="Reset">
+                    <input type="button" name="cancel" value="Cancel" onclick="go_index()">
+                </tr>
+            </form>
 
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script>
-            function go_index(){
-                window.location="/app/index"
-            }
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script>
+                function go_index(){
+                    window.location="/app/index"
+                }
 
-            function load_areas(){
-                $('#area').empty();
-                var program_id = document.getElementById("program").value
-                $.ajax({
-                    url: '../load-areas/',
-                    data: {'program_id': program_id},
-                    success: function(data) {
-                        $('#area').append('<option value="">' + '</option>');
-                        $.each(data.areas, function(index, value) {
-                            $('#area').append('<option value="' + value.area_id + '">' + value.area + '</option>');
-                        });
-                    }
-                });
-            }
-        </script>
-
+                function load_areas(){
+                    $('#area').empty();
+                    var program_id = document.getElementById("program").value
+                    $.ajax({
+                        url: '../load-areas/',
+                        data: {'program_id': program_id},
+                        success: function(data) {
+                            $('#area').append('<option value="">' + '</option>');
+                            $.each(data.areas, function(index, value) {
+                                $('#area').append('<option value="' + value.area_id + '">' + value.area + '</option>');
+                            });
+                        }
+                    });
+                }
+            </script>
+        </div>
     </body>
 </html>

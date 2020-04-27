@@ -360,41 +360,53 @@ def new_bug(request):
     resolution_list = Resolutions.objects.all()
     if request.method == 'GET':
         new_bug = BugReports()
-    elif request.method == 'POST':
-        # try save(), except error
-        new_bug = BugReports(request.POST['bug_id'], 
-            request.POST['program_id'],
-            request.POST['type_id'],
-            request.POST['severity_id'],
-            request.POST['summary'],
-            request.POST['reproducable'],
-            request.POST['description'],
-            request.POST['suggested_fix'],
-            request.POST['reported_by_emp_id'],
-            request.POST['reported_on_date'],
-            request.POST['functional_area'],
-            request.POST['assigned_to_emp_id'],
-            request.POST['comments'],
-            request.POST['status'],
-            request.POST['priority'],
-            request.POST['resolution'],
-            request.POST['resolution_version'],
-            request.POST['resolved_by_emp_id'],
-            request.POST['resolved_on_date'],
-            request.POST['tested_by_emp_id'],
-            request.POST['tested_on_date'],
-            request.POST['treat_as_deferred'])
-        # checking all fields are valid to save
-        if True:
+    if request.method == 'POST':
+        isReproduciple = request.POST.get('reproducible', False) == 'on'
+        isDeferred = request.POST.get('deferred', False) == 'on'
+
+        # Error messages
+        if len(request.POST.get('program')) == 0:
+            messages.add_message(request, messages.INFO, 'Please choose a program', extra_tags='program_name_error')
+        if len(request.POST.get('report')) == 0:
+            messages.add_message(request, messages.INFO, 'Please choose a report type', extra_tags='report_type_error')
+        if len(request.POST.get('severity')) == 0:
+            messages.add_message(request, messages.INFO, 'Please choose a severity', extra_tags='severity_error')
+        # if len(new_bug.su)
+        
+        if len(list(messages.get_messages(request))) == 0:
+            new_bug = BugReports(
+            program_id=Programs.objects.only('program_id').get(program_id=request.POST.get('program')),
+            type_id=ReportTypes.objects.only('report_type_id').get(report_type_id=request.POST.get('report')),
+            severity_id=Severities.objects.only('severity_id').get(severity_id=request.POST.get('severity')),
+            summary=request.POST.get('summary'),
+            reproducable=isReproduciple,
+            description=request.POST.get('problem'),
+            suggested_fix=request.POST.get('suggest_fix'),
+            reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('reported_by')),
+            reported_on_date=request.POST.get('date_report'),
+            functional_area=FunctionalAreas.objects.only('area_id').get(area_id=request.POST.get('area')),
+            assigned_to_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('assigned_to')),
+            comments=request.POST.get('comment'),
+            status=Status.objects.only('status_id').get(status_id=request.POST.get('status')),
+            priority=Priorities.objects.only('priority_id').get(priority_id=request.POST.get('priority')),
+            resolution=Resolutions.objects.only('resolution_id').get(resolution_id=request.POST.get('resolution')),
+            resolution_version=Resolutions.objects.only('resolution_id').get(resolution_id=request.POST.get('resolution_version')),
+            resolved_by_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('resolved_by')),
+            resolved_on_date=request.POST.get('date_resolved'),
+            tested_by_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('tested_by')),
+            tested_on_date=request.POST.get('date_tested'),
+            treat_as_deferred=isDeferred)
+            print(new_bug.treat_as_deferred)
             try:
                 new_bug.save()
-            except Error:
-                print(Error)
-        else:
-            messages.add_message(request,
-            messages.INFO,
-            'Invalid input messages',
-            extra_tags='invalid_input')
+                messages.add_message(request,
+                    messages.INFO,
+                    'New bug is added sucessfully',
+                    extra_tags='bug_add_success')
+            except Exception as e:
+                print("Something went wrong")
+                print(type(e))
+
         # else return message    
     context = { 'message' : 'This is "add new bug" page',
     'programs': program_list,
