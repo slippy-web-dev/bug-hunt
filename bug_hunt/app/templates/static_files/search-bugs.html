@@ -1,0 +1,162 @@
+<!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
+<html>
+    <head>
+        <title>Bug Search Page</title>        
+        <meta charset="utf-8">
+        <titleBug Search</title>
+    </head>
+    <body>
+        <h1>Bug Search Page </h1>
+        <div class="container">
+        <form action="{% url 'app:search_bugs' %}" method="POST"> {% csrf_token %}
+          <tr>
+                <td><label for="program">Program</label></td>
+                <td> 
+                    <select id="program" onchange="load_areas()" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        {% for p in programs %}
+                        <option value="{{ p.program_id }}">{{ p.program_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <br>
+                <br>                
+
+                <td><label for="report">Report Type</label></td>
+                <td>
+                    <select id="report" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        {% for rt in report_type %}
+                        <option value="{{ rt.report_type_id }}">{{ rt.report_type }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <br>
+                <br>
+
+                <td><label for="severity">Severity</label></td>
+                <td>
+                    <select id="severity">
+                        <option value="">ALL</option>
+                        {% for st in severity %}
+                        <option value="{{ st.severity_id }}">{{ st.severity }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <br>
+                <br>
+
+                <td><label for="reported_by">Reported By</label></td>
+                <td>
+                    <select id="reported_by" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        {% for e in employees %}
+                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <br>
+                <br>
+            
+                <td><label for="area">Functional Area</label></td>
+                <td>
+                    <select id="area" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        <!-- {% for a in areas %}
+                        <option value="{{ a.area_id }}">{{ a.area }}</option>
+                        {% endfor %} -->
+                    </select>
+                </td>
+
+                <br>
+                <br>
+
+                <td><label for="assigned_to">Assigned To</label></td>
+                <td>
+                    <select id="assigned_to">
+                        <option value="">ALL</option>
+                        {% for e in employees %}
+                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+            
+                <br>
+                <br>
+
+                <td><label for="status">Status</label></td>
+                <td>
+                    <select id="status" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        {% for s in status %}
+                        <option value="{{ s.status_id }}">{{ s.status }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <br>
+                <br>
+
+                <td><label for="priority">Priority</label></td>
+                <td>
+                    <select id="priority" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        {% for p in priority %}
+                        <option value="{{ p.priority_id }}">{{ p.priority }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+
+                <br>
+                <br>
+
+                <td><label for="resolution">Resolution</label></td>
+                <td>
+                    <select id="resolution" style="margin-right:5rem;">
+                        <option value="">ALL</option>
+                        {% for r in resolution %}
+                        <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
+                        {% endfor %}
+                    </select>
+                </td>
+          </tr>
+          <br>
+          <br>
+                <input class="btn btn-outline-primary" type="submit" value="Submit">
+                <input class="btn btn-outline-primary" type="reset" value="Reset">
+                <input class="btn btn-outline-primary" type="cancel" value="cancel" onclick="go_index()">
+                    
+        </form>
+
+        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+        <script>
+            function go_index(){
+                window.location="/app/index"
+            }
+
+            function load_areas(){
+                $('#area').empty();
+                var program_id = document.getElementById("program").value
+                $.ajax({
+                    url: '../load-areas/',
+                    data: {'program_id': program_id},
+                    success: function(data) {
+                        $('#area').append('<option value="">' + '</option>');
+                        $.each(data.areas, function(index, value) {
+                            $('#area').append('<option value="' + value.area_id + '">' + value.area + '</option>');
+                        });
+                    }
+                });
+            }
+        </script>
+    </div>
+    </body>
+</html>

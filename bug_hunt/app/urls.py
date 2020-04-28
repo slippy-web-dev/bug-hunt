@@ -4,11 +4,13 @@ from django.contrib.auth import views as django_auth_views
 
 app_name = 'app'
 urlpatterns = [
+    path('', django_auth_views.LoginView.as_view(), name='login'),
     path('login/', django_auth_views.LoginView.as_view(), name='login'),
     path('logout/', django_auth_views.LogoutView.as_view(), name='logout'),
     path('index/', views.index, name='index'),
     path('new-bug/', views.new_bug, name='new_bug'),
     path('update-bug/', views.update_bug, name='update_bug'),
+    path('search-bugs/', views.search_bugs, name='search_bugs'),
     path('admin/db-maintenance/', views.database_maintenance, name='database_maintenance'),
     path('admin/edit-areas/', views.edit_areas, name='edit_areas'),
     path('admin/add-areas/', views.add_areas, name='add_areas'),
