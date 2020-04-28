@@ -81,6 +81,7 @@ class BugReports(models.Model):
     tested_by_emp_id   = models.ForeignKey('Employees', on_delete=models.CASCADE, related_name="tested_emp", null=True, blank=True)
     tested_on_date     = models.DateField(null=True, blank=True)
     treat_as_deferred  = models.BooleanField()
+    objects = models.Manager()
 
 class Attachments(models.Model):
     attachment_id      = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])

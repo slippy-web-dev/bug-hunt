@@ -22,39 +22,123 @@ def index(request):
 @login_required
 def update_bug(request):
     if request.method == 'GET':
-        # load bug_id and all relevant information
-        # program_list = Programs.objects.all()
-        report_type_list = ReportTypes.objects.all()
-        severity_list = Severities.objects.all()
-        employee_list = Employees.objects.all()
-        # default_report_by = str(request.user)
-        area_list = FunctionalAreas.objects.all()
-        status_list = Status.objects.all()
-        priority_list = Priorities.objects.all()
-        resolution_list = Resolutions.objects.all()
-        
-        # bug_id = request.GET['bug_id']
-        # current_bug = BugReports.objects.get(pk=bug_id)
+        bug_id = request.GET.get('bug_id', '')
+        if len(bug_id) > 0:
+            current_bug = BugReports.objects.get(pk=bug_id)
+            report_type_list = ReportTypes.objects.all()
+            severity_list = Severities.objects.all()
+            employee_list = Employees.objects.all()
+            area_list = FunctionalAreas.objects.all()
+            status_list = Status.objects.all()
+            priority_list = Priorities.objects.all()
+            resolution_list = Resolutions.objects.all()
+            
+            current_program = Programs.objects.get(pk=current_bug.program_id.program_id)
+            context = { 
+                'p': current_program,
+                'report_type': report_type_list,
+                'severity': severity_list,
+                'employees': employee_list,
+                'areas': area_list,
+                'status': status_list,
+                'priority': priority_list,
+                'resolution': resolution_list,
+                'current_bug': current_bug,
+                'current_date' : str(current_bug.reported_on_date),
+                }
+        else:
+            context = {'m_error' : 'No bug_id found (check url params)'}
 
-        context = {
-            # 'message' : 'This is "update bug" page',
-            # 'programs': program_list,
-            'report_type': report_type_list,
-            'severity': severity_list,
-            'employees': employee_list,
-            'areas': area_list,
-            'status': status_list,
-            'priority': priority_list,
-            'resolution': resolution_list
-            }
-        return render(request, 'static_files/edit-bug.html', context=context)
-    # elif request.method == 'POST':
-    else:
-        # POST logic here
-        context = {
-            'message' : 'This is "update bug" link',
-        }
-        return render(request, 'static_files/edit-bug.html', context=context)
+    elif request.method == 'POST':
+        # extract request
+        current_bug_id = request.POST.get('bug_id', False)
+        isReproduciple = request.POST.get('reproducible', False) == 'on'
+        isDeferred = request.POST.get('deferred', False) == 'on'
+        program_id = request.POST.get('program', False)
+        report_type_id = request.POST.get('report', False)
+        severity_id = request.POST.get('severity', False)
+        summary = request.POST.get('summary', False)
+        description = request.POST.get('problem', False)
+        suggested_fix = request.POST.get('suggest_fix', False)
+        reported_by = request.POST.get('reported_by', False)
+        date_report = request.POST.get('date_report', False)
+        area_id = request.POST.get('area', False)
+        assigned_to = request.POST.get('assigned_to', False)
+        comment = request.POST.get('comment', False)
+        status_id = request.POST.get('status', False)
+        priority_id = request.POST.get('priority', False)
+        resolution_id = request.POST.get('resolution', False)
+        resolution_version = request.POST.get('resolution_version', False)
+        resolved_by = request.POST.get('resolved_by', False)
+        date_resolved = request.POST.get('date_resolved', False)
+        tested_by = request.POST.get('tested_by', False)
+        date_tested = request.POST.get('date_tested', False)
+
+        current_bug = BugReports(pk=current_bug_id)
+
+        # Validate Field
+        if not program_id: messages.add_message(request, messages.INFO, 'Program; ')
+        else: current_bug.program_id = Programs.objects.only('program_id').get(program_id=program_id)
+
+        if not report_type_id: messages.add_message(request, messages.INFO, 'Report Type; ')
+        else: current_bug.type_id = ReportTypes.objects.only('report_type_id').get(report_type_id=report_type_id)
+
+        if not severity_id: messages.add_message(request, messages.INFO, 'Severity; ')
+        else: current_bug.severity_id = Severities.objects.only('severity_id').get(severity_id=severity_id)
+
+        if not summary: messages.add_message(request, messages.INFO, 'Summary; ')
+        else: current_bug.summary = summary
+            
+        if not description: messages.add_message(request, messages.INFO, 'Description; ')
+        else: current_bug.description = description
+
+        if not suggested_fix: messages.add_message(request, messages.INFO, 'Suggested Fix; ')
+        else: current_bug.suggested_fix = suggested_fix
+
+        if not reported_by: messages.add_message(request, messages.INFO, 'Reported Employee; ')
+        else: current_bug.reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=reported_by)
+
+        if not date_report: messages.add_message(request, messages.INFO, 'Reported Date; ')    
+        else: current_bug.reported_on_date = date_report
+
+        if area_id: current_bug.functional_area = FunctionalAreas.objects.only('area_id').get(area_id=area_id)
+
+        if assigned_to: current_bug.assigned_to_emp_id = Employees.objects.only('employee_id').get(employee_id=assigned_to)
+
+        if comment: current_bug.comments = comment
+
+        if status_id: current_bug.status = Status.objects.only('status_id').get(status_id=status_id)
+
+        if priority_id: current_bug.priority = Priorities.objects.only('priority_id').get(priority_id=priority_id)
+
+        if resolution_id: current_bug.resolution = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_id)
+
+        if resolution_version: current_bug.resolution_version = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_version)
+
+        if resolved_by: current_bug.resolved_by_emp_id = Employees.objects.only('employee_id').get(employee_id=resolved_by)
+
+        if date_resolved: current_bug.resolved_on_date = date_resolved
+
+        if tested_by: current_bug.tested_by_emp_id = Employees.objects.only('employee_id').get(employee_id=tested_by)
+
+        if date_tested: current_bug.tested_on_date=date_tested
+
+        current_bug.reproducable = isReproduciple
+        current_bug.treat_as_deferred = isDeferred
+
+        if len(list(messages.get_messages(request))) == 0:
+            try:
+                current_bug.save()
+                messages.add_message(request,
+                    messages.INFO,
+                    'New bug is added sucessfully',
+                    extra_tags='bug_add_success')
+                current_bug = BugReports()
+            except Exception as e:
+                print("Something went wrong")
+                print(e)
+        context = {}
+    return render(request, 'static_files/edit-bug.html', context=context)
 
 
 @staff_member_required
