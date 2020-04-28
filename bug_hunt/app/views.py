@@ -74,7 +74,15 @@ def update_bug(request):
         tested_by = request.POST.get('tested_by', False)
         date_tested = request.POST.get('date_tested', False)
 
+        report_type_list = ReportTypes.objects.all()
+        severity_list = Severities.objects.all()
+        employee_list = Employees.objects.all()
+        area_list = FunctionalAreas.objects.all()
+        status_list = Status.objects.all()
+        priority_list = Priorities.objects.all()
+        resolution_list = Resolutions.objects.all()
         current_bug = BugReports(pk=current_bug_id)
+        current_program = Programs.objects.get(pk=program_id)
 
         # Validate Field
         if not program_id: messages.add_message(request, messages.INFO, 'Program; ')
@@ -133,11 +141,21 @@ def update_bug(request):
                     messages.INFO,
                     'New bug is added sucessfully',
                     extra_tags='bug_add_success')
-                current_bug = BugReports()
             except Exception as e:
                 print("Something went wrong")
                 print(e)
-        context = {}
+        context = { 
+                'p': current_program,
+                'report_type': report_type_list,
+                'severity': severity_list,
+                'employees': employee_list,
+                'areas': area_list,
+                'status': status_list,
+                'priority': priority_list,
+                'resolution': resolution_list,
+                'current_bug': current_bug,
+                'current_date' : str(current_bug.reported_on_date),
+                }
     return render(request, 'static_files/edit-bug.html', context=context)
 
 
