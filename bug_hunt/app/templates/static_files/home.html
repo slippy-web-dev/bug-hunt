@@ -14,6 +14,11 @@
         Welcome to BugHound
       </h2>
       <br>
+      <div >
+        <span class="badge badge-pill badge-primary badge-outline program-select">Username: {{username}}</span> &nbsp;
+        <span class="badge badge-pill badge-primary badge-outline program-select">Access Level: {{access_level}}</span>
+      </div>
+      <br>
       <div class="list-group half-width">
         <a class="list-group-item list-group-item-action " href="{% url 'app:new_bug' %}">Enter a NEW Bug</a>
         <a class="list-group-item list-group-item-action " href="{% url 'app:update_bug' %}">Update EXISTING Bug</a>
