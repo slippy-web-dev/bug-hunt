@@ -21,8 +21,41 @@ def index(request):
 
 @login_required
 def update_bug(request):
-    context = { 'message' : 'This is "update bug" link'}
-    return render(request, 'static_files/test.html', context=context)
+    if request.method == 'GET':
+        # load bug_id and all relevant information
+        # program_list = Programs.objects.all()
+        report_type_list = ReportTypes.objects.all()
+        severity_list = Severities.objects.all()
+        employee_list = Employees.objects.all()
+        # default_report_by = str(request.user)
+        area_list = FunctionalAreas.objects.all()
+        status_list = Status.objects.all()
+        priority_list = Priorities.objects.all()
+        resolution_list = Resolutions.objects.all()
+        
+        # bug_id = request.GET['bug_id']
+        # current_bug = BugReports.objects.get(pk=bug_id)
+
+        context = {
+            # 'message' : 'This is "update bug" page',
+            # 'programs': program_list,
+            'report_type': report_type_list,
+            'severity': severity_list,
+            'employees': employee_list,
+            'areas': area_list,
+            'status': status_list,
+            'priority': priority_list,
+            'resolution': resolution_list
+            }
+        return render(request, 'static_files/edit-bug.html', context=context)
+    # elif request.method == 'POST':
+    else:
+        # POST logic here
+        context = {
+            'message' : 'This is "update bug" link',
+        }
+        return render(request, 'static_files/edit-bug.html', context=context)
+
 
 @staff_member_required
 def database_maintenance(request):
@@ -140,7 +173,7 @@ def edit_programs(request):
 def add_employees(request):
     if request.method == 'GET':
         new_employee = Employees()
-    if request.method == 'POST':      
+    if request.method == 'POST':
         is_staff = False
         if request.POST['accesslevels'] == '3':
             is_staff = True
