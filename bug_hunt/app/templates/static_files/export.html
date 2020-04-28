@@ -21,10 +21,19 @@
           </tr>
           <tr>
             <td>
-              <input class="form-control fit-ct text-center" type="text" name="db_table" value="Employees">
+              <select class="form-control fit-ct text-center" id="tables" name="db_table">
+                <option for="tables" value="Employees">Employees</option>
+                <option for="tables" value="Areas">Functional Areas</option>
+                <option for="tables" value="Programs">Programs</option>
+              </select>
+              <!-- <input class="form-control fit-ct text-center" type="text" name="db_table" value="Employees"> -->
             </td>
             <td>
-              <input class="form-control fit-ct text-center" type="text" name="file_format" value="XML">
+              <select class="form-control fit-ct text-center" id="format" name="file_format">
+                <option for="format" value="XML">XML</option>
+                <option for="format" value="ASCII">ASCII</option>
+              </select>
+              <!-- <input class="form-control fit-ct text-center" type="text" name="file_format" value="XML"> -->
             </td>
           </tr>
           <tr>
@@ -37,7 +46,7 @@
             </td>
             <td></td>
           </tr>
-        </table>   
+        </table>
         
       </form>
     </div>

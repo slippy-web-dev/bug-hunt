@@ -300,36 +300,36 @@ def export_data(request):
         db_table = request.POST['db_table']
         if db_table == 'Employees':
             table_object = Employees.objects.all()
-            employee_resource = EmployeesResource()
-            dataset = employee_resource.export()
+            # employee_resource = EmployeesResource()
+            # dataset = employee_resource.export()
             which_table = 'INSERT INTO "app_employees"'
         elif db_table == 'Programs':
             table_object = Programs.objects.all()
-            program_resource = ProgramsResource()
-            dataset = program_resource.export()
+            # program_resource = ProgramsResource()
+            # dataset = program_resource.export()
             which_table = 'INSERT INTO "app_programs"'
         elif db_table == 'Areas':
             table_object = FunctionalAreas.objects.all()
-            area_resource = FunctionalAreasResource()
-            dataset = area_resource.export()
+            # area_resource = FunctionalAreasResource()
+            # dataset = area_resource.export()
             which_table = 'INSERT INTO "app_functionalareas"'
         else:
             context = { 'message' : 'Please type in "Employees", "Programs", or "FunctionalAreas"'}
             return render(request, 'static_files/export.html', context=context)
 
-        if file_format == 'CSV':
-            response = HttpResponse(dataset.csv, content_type='text/csv')
-            response['Content-Disposition'] = 'attachment; filename="exported_data.csv"'
-            return response        
-        elif file_format == 'JSON':
-            response = HttpResponse(dataset.json, content_type='application/json')
-            response['Content-Disposition'] = 'attachment; filename="exported_data.json"'
-            return response
-        elif file_format == 'XLS (Excel)':
-            response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
-            response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
-            return response
-        elif file_format == 'XML':
+        # if file_format == 'CSV':
+        #     response = HttpResponse(dataset.csv, content_type='text/csv')
+        #     response['Content-Disposition'] = 'attachment; filename="exported_data.csv"'
+        #     return response        
+        # elif file_format == 'JSON':
+        #     response = HttpResponse(dataset.json, content_type='application/json')
+        #     response['Content-Disposition'] = 'attachment; filename="exported_data.json"'
+        #     return response
+        # elif file_format == 'XLS (Excel)':
+        #     response = HttpResponse(dataset.xls, content_type='application/vnd.ms-excel')
+        #     response['Content-Disposition'] = 'attachment; filename="exported_data.xls"'
+        #     return response
+        if file_format == 'XML':
             from django.core import serializers
             data = serializers.serialize('xml', table_object)
             from django.core.files import File
@@ -347,33 +347,33 @@ def export_data(request):
                     if line.startswith(which_table):
                         f.write('%s\n' % line)
             con.close()
-        elif file_format == 'ASCII_old':
-            con = sqlite3.connect('db.sqlite3')
-            with open('exported_data.txt', 'w') as f:
-                for line in con.iterdump():
-                    # edit LINE to fit with SQL format
-                    if any(invalid_stmt in line for invalid_stmt in ['BEGIN TRANSACTION','COMMIT','sqlite_sequence','CREATE UNIQUE INDEX']): 
-                        continue
-                    else:
-                        m = re.search('CREATE TABLE "([a-z_]*)"(.*)', line)
-                        if m :
-                            name, sub = m.groups()
-                            sub = sub.replace('"','`')
-                            line = '''DROP TABLE IF EXISTS %(name)s; CREATE TABLE IF NOT EXISTS %(name)s%(sub)s'''
-                            line = line % dict(name=name, sub=sub)
-                        else:
-                            m = re.search('INSERT INTO "([a-z_]*)"(.*)', line)
-                            if m:
-                                line = 'INSERT INTO %s%s\n' % m.groups()
-                                line = line.replace('"', r'\"')
-                                line = line.replace('"', "'")
-                        line = re.sub(r"([^'])'t'(.)", r"\1THIS_IS_TRUE\2", line)
-                        line = line.replace('THIS_IS_TRUE', '1')
-                        line = re.sub(r"([^'])'f'(.)", r"\1THIS_IS_FALSE\2", line)
-                        line = line.replace('THIS_IS_FALSE', '0')
-                        line = line.replace('AUTOINCREMENT', 'AUTO_INCREMENT')
-                        line = line.replace('app_', '')
-                        f.write('%s\n' % line)
+        # elif file_format == 'ASCII_old':
+        #     con = sqlite3.connect('db.sqlite3')
+        #     with open('exported_data.txt', 'w') as f:
+        #         for line in con.iterdump():
+        #             # edit LINE to fit with SQL format
+        #             if any(invalid_stmt in line for invalid_stmt in ['BEGIN TRANSACTION','COMMIT','sqlite_sequence','CREATE UNIQUE INDEX']): 
+        #                 continue
+        #             else:
+        #                 m = re.search('CREATE TABLE "([a-z_]*)"(.*)', line)
+        #                 if m :
+        #                     name, sub = m.groups()
+        #                     sub = sub.replace('"','`')
+        #                     line = '''DROP TABLE IF EXISTS %(name)s; CREATE TABLE IF NOT EXISTS %(name)s%(sub)s'''
+        #                     line = line % dict(name=name, sub=sub)
+        #                 else:
+        #                     m = re.search('INSERT INTO "([a-z_]*)"(.*)', line)
+        #                     if m:
+        #                         line = 'INSERT INTO %s%s\n' % m.groups()
+        #                         line = line.replace('"', r'\"')
+        #                         line = line.replace('"', "'")
+        #                 line = re.sub(r"([^'])'t'(.)", r"\1THIS_IS_TRUE\2", line)
+        #                 line = line.replace('THIS_IS_TRUE', '1')
+        #                 line = re.sub(r"([^'])'f'(.)", r"\1THIS_IS_FALSE\2", line)
+        #                 line = line.replace('THIS_IS_FALSE', '0')
+        #                 line = line.replace('AUTOINCREMENT', 'AUTO_INCREMENT')
+        #                 line = line.replace('app_', '')
+        #                 f.write('%s\n' % line)
         else:
             context = { 'message' : 'Please type in one of the following choices: CSV, JSON, XLS (Excel), XML'}
             return render(request, 'static_files/export.html', context=context)
