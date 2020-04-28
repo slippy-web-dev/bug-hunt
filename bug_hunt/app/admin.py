@@ -1,5 +1,5 @@
 from django.contrib import admin
-import models as m
+from . import models as m
 # from .models import AccessLevels, Severities, AttachmentTypes, ReportTypes, Status, Priorities, Resolutions
 # Register your models here.
 
