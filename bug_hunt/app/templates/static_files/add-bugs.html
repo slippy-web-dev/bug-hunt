@@ -20,16 +20,16 @@
             <form action="{% url 'app:new_bug' %}" method="POST"> {% csrf_token %}
                 <div class="row">
                     <div class="col-sm">
-                        <label for="program">Program</label>
+                        <label for="program">Program*</label>
                         <select id="program" onchange="load_areas()" name="program" class="form-control fit-ct inline-disp">
                             <option value="" selected></option>
                             {% for p in programs %}
-                            <option value="{{ p.program_id }}">{{ p.program_name }}</option>                                                  
+                            <option value="{{ p.program_id }}">{{ p.program_name }} - {{p.program_version}} - {{p.program_release}}</option>                                                  
                             {% endfor %}
                         </select>
                     </div>
                     <div class="col-sm">
-                        <label for="report">Report Type</label>
+                        <label for="report">Report Type*</label>
                         <select id="report"  name="report" class="form-control fit-ct inline-disp">
                             <option value=""></option>
                             {% for rt in report_type %}
@@ -42,7 +42,7 @@
                         </select>
                     </div>
                     <div class="col-sm">
-                        <label for="severity">Severity</label>
+                        <label for="severity">Severity*</label>
                         <select id="severity" name="severity" class="form-control fit-ct inline-disp">
                             <option value=""></option>
                             {% for st in severity %}
@@ -58,19 +58,19 @@
                 <br>
                 <div class="row">                       
                     <div class="col-8">     
-                        <label for="summary" style="margin-right: 1rem;">Problem Summary</label>            
+                        <label for="summary" style="margin-right: 1rem;">Problem Summary*</label>            
                         <input type="text" id="summary" name="summary" value="{{new_bug.summary}}" 
                             style="width: 60%;" class="form-control fit-ct inline-disp">
                     </div>
                     <div class="col-4">
                         <label for="reproducibe_checkbox">Reproducible ?</label>
-                        <input id="reproducibe_checkbox" type="checkbox" name="reproducible">
+                        <input id="reproducibe_checkbox" type="checkbox" name="reproducible" {% if new_bug.reproducable %} checked {% endif %}>
                     </div>
                 </div>
                 <br>
                 <div class="row">
                     <div class="col-12">
-                        <label for="problem" style="margin-right: 1rem;">Problem
+                        <label for="problem" style="margin-right: 1rem;">Problem*
                             <textarea id="problem" rows="3" cols="70" name="problem" value="{{new_bug.description}}" 
                                 class="form-control fit-ct inline-disp" style="margin-left: 1rem;">{{new_bug.description}}</textarea>
                         </label>
@@ -79,7 +79,7 @@
                 <br>
                 <div class="row">
                     <div class="col-12">
-                        <label for="suggest_fix" style="margin-right: 1rem;">Suggested Fix
+                        <label for="suggest_fix" style="margin-right: 1rem;">Suggested Fix*
                             <textarea id="suggest_fix" rows="3" cols="70" name="suggest_fix" value="{{new_bug.suggested_fix}}" 
                                 class="form-control fit-ct inline-disp" style="margin-left: 1rem;">{{new_bug.suggested_fix}}</textarea>
                         </label>
@@ -88,7 +88,7 @@
                 <br>
                 <div class="row">
                     <div class="col-4">
-                        <label for="reported_by" style="margin-right: 1rem;">Reported By</label>
+                        <label for="reported_by" style="margin-right: 1rem;">Reported By*</label>
                         <select id="reported_by" name="reported_by" class="form-control fit-ct inline-disp">
                             <option value=""></option>
                             {% for e in employees %}
@@ -101,8 +101,8 @@
                         </select>
                     </div>
                     <div class="col-4">
-                        <label for="date_report">Date</label>
-                        <input id="date_report" type="date" name="date_report" class="form-control fit-ct inline-disp">
+                        <label for="date_report">Date*</label>
+                        <input id="date_report" type="date" name="date_report" class="form-control fit-ct inline-disp" value={{new_bug.reported_on_date}}>
                     </div>
                     <div class="col-4"></div>
                 </div>
@@ -240,7 +240,7 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <input id="date_resolved" type="date" name="date_resolved" class="form-control fit-ct inline-disp">
+                        <input id="date_resolved" type="date" name="date_resolved" class="form-control fit-ct inline-disp" value={{new_bug.resolved_on_date}}>
                     </div>
                     <div class="col-3">
                         <select id="tested_by" name="tested_by" class="form-control fit-ct inline-disp">
@@ -255,10 +255,10 @@
                         </select>
                     </div>
                     <div class="col-sm-2">
-                        <input id="date_tested" type="date" name="date_tested" class="form-control fit-ct inline-disp">
+                        <input id="date_tested" type="date" name="date_tested" class="form-control fit-ct inline-disp" value={{new_bug.tested_on_date}}>
                     </div>
                     <div class="col-sm-1" style="text-align: center;">
-                        <input id="deferred_checkbox" type="checkbox" name="deferred">
+                        <input id="deferred_checkbox" type="checkbox" name="deferred" {% if new_bug.treat_as_deferred %} checked {% endif %}>
                     </div>
                 </div>
                 <br>
