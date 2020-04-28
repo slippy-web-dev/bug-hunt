@@ -68,15 +68,22 @@ def edit_areas(request):
         if 'update' in request.POST:
             area_object = FunctionalAreas.objects.get(pk=request.POST['area_id'])
             area_object.area = request.POST['area']
-            area_object.save()
-            messages.add_message(request, messages.INFO, 'Area ' + area_object.area  + " has been updated", extra_tags='area_update')
+            if FunctionalAreas.objects.filter(area=area_object.area, program_id=area_object.program_id).exists():
+               messages.add_message(request, messages.INFO, 'Area ' + area_object.area  + " is duplicated") 
+            else:
+                try:
+                    area_object.save()
+                    messages.add_message(request, messages.INFO, 'Area ' + area_object.area  + " has been updated", extra_tags='area_update')
+                except Exception as e:
+                    print(type(e))
+            
         elif 'delete' in request.POST:
             area_id = request.POST['area_id']
             area = request.POST['area']
             try :
                 FunctionalAreas.objects.filter(area_id=area_id).delete()
-            except Error:
-                print(Error)
+            except Exception as e:
+                print(type(e))
             messages.add_message(request, messages.INFO, 'Area ' + area  + " has been deleted", extra_tags='area_delete')
         program_id = request.POST['program_id']
         program_object = Programs.objects.get(pk=program_id)
@@ -97,10 +104,14 @@ def add_areas(request):
     if request.method == 'POST':
         program_object = Programs.objects.get(pk=request.POST['program_id'])
         if len(request.POST['area']) > 0:
-            area_object = FunctionalAreas(area=request.POST['area'],
-                                        program_id=program_object
-                                    )
-            area_object.save()
+            area_object = FunctionalAreas(area=request.POST['area'], program_id=program_object)
+            if FunctionalAreas.objects.filter(area=area_object.area, program_id=program_object).exists():
+                messages.error(request, 'Area name is duplicated')
+            else:
+                try:
+                    area_object.save()
+                except Exception as e:
+                    print(type(e))
         else:
             messages.error(request, 'Area name cannot be empty')
         area_list = FunctionalAreas.objects.filter(program_id=request.POST['program_id'])
@@ -132,15 +143,17 @@ def add_programs(request):
             messages.add_message(request, messages.INFO, 'Program version cannot be empty', extra_tags='program_version_empty')
         if len(request.POST['program_release']) == 0:
             messages.add_message(request, messages.INFO, 'Proram release cannot be empty', extra_tags='program_release_empty')
-        if Programs.objects.filter(program_name=new_program.program_name).exists():
-            messages.add_message(request, messages.INFO, 'Program name is duplicate', extra_tags='program_name_error')
         if  len(list(messages.get_messages(request))) == 0:
-            try:
-                new_program.save()
-            except Error:
-                print(Error)
-            messages.add_message(request, messages.INFO, 'Program ' + new_program.program_name + ' has been added successfully', extra_tags='program_add_success')
-            new_program = Programs()
+            if Programs.objects.filter(program_name=new_program.program_name, program_version=new_program.program_version, 
+                program_release=new_program.program_release).exists():
+                messages.add_message(request, messages.INFO, 'Proram is duplicated', extra_tags='program_release_empty')
+            else:
+                try:
+                    new_program.save()
+                except Exception as e:
+                    print(type(e))
+                messages.add_message(request, messages.INFO, 'Program ' + new_program.program_name + ' has been added successfully', extra_tags='program_add_success')
+                new_program = Programs()
     context = {'new_program': new_program}
     return render(request, 'static_files/add-programs.html', context=context)
 
@@ -152,15 +165,22 @@ def edit_programs(request):
             program_object.program_name = request.POST['program_name']
             program_object.program_version = request.POST['program_version']
             program_object.program_release = request.POST['program_release']
-            program_object.save()
-            messages.info(request, 'Program ' + program_object.program_name + ' has been updated')
+            if Programs.objects.filter(program_name=program_object.program_name, 
+                program_version=program_object.program_version, program_release=program_object.program_release).exists():
+                messages.info(request, 'Program ' + program_object.program_name + ' is duplicated')
+            else:
+                try:
+                    program_object.save()
+                    messages.info(request, 'Program ' + program_object.program_name + ' has been updated')
+                except Exception as e:
+                    print(type(e))
         elif 'delete' in request.POST:
             program_id =  int(request.POST['program_id'])
             program_name = str(request.POST['program_name'])
             try: 
                 Programs.objects.filter(program_id=program_id).delete()
-            except Error:
-                print(Error) 
+            except Exception as e:
+                print(type(e)) 
             messages.add_message(request, messages.INFO, 'Program ' + program_name + " has been deleted", extra_tags='program_delete')
         # when save() is successful
     program_list = Programs.objects.all()
@@ -200,8 +220,8 @@ def add_employees(request):
                                                     is_staff=is_staff
                                                 )
                 new_employee.save()
-            except Error:
-                print(Error)
+            except Exception as e:
+                print(type(e))
             messages.add_message(request, messages.INFO, 
                 "Employee's username" + new_employee.employee_username + " has been added successfully",
                 extra_tags='employee_add_success')
@@ -238,34 +258,40 @@ def edit_employees(request):
             user_object.username = request.POST['employee_username']
             user_object.set_password(request.POST['employee_password'])
             user_object.is_staff = is_staff
-            employee_object.save()
-            user_object.save()
-            # when save() is successful
-            messages.info(request, 'Employee ' + user_lookup_name + ' has been updated')
-            messages.add_message(
-                request, 
-                messages.INFO, 
-                'Name: ' + employee_message_info['employee_name'] + ' -> ' + employee_object.employee_name, 
-                extra_tags='employee_name_update'
-            )
-            messages.add_message(
-                request,
-                messages.INFO,
-                'Username: ' + employee_message_info['employee_username'] + ' -> ' + employee_object.employee_username,
-                extra_tags='employee_username_update'
-            )
-            messages.add_message(
-                request,
-                messages.INFO,
-                'Password: ' + employee_message_info['employee_password'],
-                extra_tags='employee_password_update'
-            )
-            messages.add_message(
-                request,
-                messages.INFO,
-                'Access Level: ' + employee_message_info['accesslevels'] + ' -> ' + request.POST['accesslevels'],
-                extra_tags='accesslevels_update'
-            )
+            if Employees.objects.filter(employee_username=employee_object.employee_username).exists():
+                messages.add_message(request, messages.INFO, "Employee username is duplicated", extra_tags='employee_name_update')
+            else:
+                try:
+                    employee_object.save()
+                    user_object.save()
+                    # when save() is successful
+                    messages.info(request, 'Employee ' + user_lookup_name + ' has been updated')
+                    messages.add_message(
+                        request, 
+                        messages.INFO, 
+                        'Name: ' + employee_message_info['employee_name'] + ' -> ' + employee_object.employee_name, 
+                        extra_tags='employee_name_update'
+                    )
+                    messages.add_message(
+                        request,
+                        messages.INFO,
+                        'Username: ' + employee_message_info['employee_username'] + ' -> ' + employee_object.employee_username,
+                        extra_tags='employee_username_update'
+                    )
+                    messages.add_message(
+                        request,
+                        messages.INFO,
+                        'Password: ' + employee_message_info['employee_password'],
+                        extra_tags='employee_password_update'
+                    )
+                    messages.add_message(
+                        request,
+                        messages.INFO,
+                        'Access Level: ' + employee_message_info['accesslevels'] + ' -> ' + request.POST['accesslevels'],
+                        extra_tags='accesslevels_update'
+                    )
+                except Exception as e:
+                    print(type(e))
 
         elif 'delete' in request.POST:
             employee_object = Employees.objects.get(pk=request.POST['employee_id'])
@@ -273,8 +299,8 @@ def edit_employees(request):
             try: 
                 Employees.objects.filter(employee_id=employee_id).delete()
                 User.objects.filter(username=employee_object.employee_username).delete()
-            except Error:
-                print(Error) 
+            except Exception as e:
+                print(type(e)) 
             messages.add_message(request,
                 messages.INFO,
                 'User ' + employee_object.employee_username + " has been deleted",
@@ -391,44 +417,92 @@ def new_bug(request):
     status_list = Status.objects.all()
     priority_list = Priorities.objects.all()
     resolution_list = Resolutions.objects.all()
-    if request.method == 'GET':
-        new_bug = BugReports()
-    elif request.method == 'POST':
-        # try save(), except error
-        new_bug = BugReports(request.POST['bug_id'], 
-            request.POST['program_id'],
-            request.POST['type_id'],
-            request.POST['severity_id'],
-            request.POST['summary'],
-            request.POST['reproducable'],
-            request.POST['description'],
-            request.POST['suggested_fix'],
-            request.POST['reported_by_emp_id'],
-            request.POST['reported_on_date'],
-            request.POST['functional_area'],
-            request.POST['assigned_to_emp_id'],
-            request.POST['comments'],
-            request.POST['status'],
-            request.POST['priority'],
-            request.POST['resolution'],
-            request.POST['resolution_version'],
-            request.POST['resolved_by_emp_id'],
-            request.POST['resolved_on_date'],
-            request.POST['tested_by_emp_id'],
-            request.POST['tested_on_date'],
-            request.POST['treat_as_deferred'])
-        # checking all fields are valid to save
-        if True:
+    new_bug = BugReports()
+    if request.method == 'POST':
+        # extract request
+        isReproduciple = request.POST.get('reproducible', False) == 'on'
+        isDeferred = request.POST.get('deferred', False) == 'on'
+        program_id = request.POST.get('program', False)
+        report_type_id = request.POST.get('report', False)
+        severity_id = request.POST.get('severity', False)
+        summary = request.POST.get('summary', False)
+        description = request.POST.get('problem', False)
+        suggested_fix = request.POST.get('suggest_fix', False)
+        reported_by = request.POST.get('reported_by', False)
+        date_report = request.POST.get('date_report', False)
+        area_id = request.POST.get('area', False)
+        assigned_to = request.POST.get('assigned_to', False)
+        comment = request.POST.get('comment', False)
+        status_id = request.POST.get('status', False)
+        priority_id = request.POST.get('priority', False)
+        resolution_id = request.POST.get('resolution', False)
+        resolution_version = request.POST.get('resolution_version', False)
+        resolved_by = request.POST.get('resolved_by', False)
+        date_resolved = request.POST.get('date_resolved', False)
+        tested_by = request.POST.get('tested_by', False)
+        date_tested = request.POST.get('date_tested', False)
+
+        # Validate Field
+        if not program_id: messages.add_message(request, messages.INFO, 'Program; ')
+        else: new_bug.program_id = Programs.objects.only('program_id').get(program_id=program_id)
+
+        if not report_type_id: messages.add_message(request, messages.INFO, 'Report Type; ')
+        else: new_bug.type_id = ReportTypes.objects.only('report_type_id').get(report_type_id=report_type_id)
+
+        if not severity_id: messages.add_message(request, messages.INFO, 'Severity; ')
+        else: new_bug.severity_id = Severities.objects.only('severity_id').get(severity_id=severity_id)
+
+        if not summary: messages.add_message(request, messages.INFO, 'Summary; ')
+        else: new_bug.summary = summary
+            
+        if not description: messages.add_message(request, messages.INFO, 'Description; ')
+        else: new_bug.description = description
+
+        if not suggested_fix: messages.add_message(request, messages.INFO, 'Suggested Fix; ')
+        else: new_bug.suggested_fix = suggested_fix
+
+        if not reported_by: messages.add_message(request, messages.INFO, 'Reported Employee; ')
+        else: new_bug.reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=reported_by)
+
+        if not date_report: messages.add_message(request, messages.INFO, 'Reported Date; ')    
+        else: new_bug.reported_on_date = date_report
+
+        if area_id: new_bug.functional_area = FunctionalAreas.objects.only('area_id').get(area_id=area_id)
+
+        if assigned_to: new_bug.assigned_to_emp_id = Employees.objects.only('employee_id').get(employee_id=assigned_to)
+
+        if comment: new_bug.comments = comment
+
+        if status_id: new_bug.status = Status.objects.only('status_id').get(status_id=status_id)
+
+        if priority_id: new_bug.priority = Priorities.objects.only('priority_id').get(priority_id=priority_id)
+
+        if resolution_id: new_bug.resolution = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_id)
+
+        if resolution_version: new_bug.resolution_version = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_version)
+
+        if resolved_by: new_bug.resolved_by_emp_id = Employees.objects.only('employee_id').get(employee_id=resolved_by)
+
+        if date_resolved: new_bug.resolved_on_date = date_resolved
+
+        if tested_by: new_bug.tested_by_emp_id = Employees.objects.only('employee_id').get(employee_id=tested_by)
+
+        if date_tested: new_bug.tested_on_date=date_tested
+
+        new_bug.reproducable = isReproduciple
+        new_bug.treat_as_deferred = isDeferred
+
+        if len(list(messages.get_messages(request))) == 0:
             try:
                 new_bug.save()
-            except Error:
-                print(Error)
-        else:
-            messages.add_message(request,
-            messages.INFO,
-            'Invalid input messages',
-            extra_tags='invalid_input')
-        # else return message    
+                messages.add_message(request,
+                    messages.INFO,
+                    'New bug is added sucessfully',
+                    extra_tags='bug_add_success')
+                new_bug = BugReports()
+            except Exception as e:
+                print("Something went wrong")
+                print(type(e))
     context = { 'message' : 'This is "add new bug" page',
     'programs': program_list,
     'report_type': report_type_list,
@@ -437,7 +511,8 @@ def new_bug(request):
     'areas': area_list,
     'status': status_list,
     'priority': priority_list,
-    'resolution': resolution_list}
+    'resolution': resolution_list,
+    'new_bug': new_bug}
     return render(request, 'static_files/add-bugs.html', context=context)
 
 def load_areas(request):

@@ -8,12 +8,12 @@
   <head>
     <meta charset="utf-8">
     <title>Edit Employees</title>
+    
   </head>
   <body>
     <div class="container vertical-margin">
       {% if  employee_list %}
       <p>Edit an Employee</p>
-      
       {% if messages %}
       <div class="alert alert-warning fit-ct">
         {% for message in messages %}
@@ -38,9 +38,10 @@
           <td>
             <label for="employee_password">Password </label>
             <div class="input-group">
-              <input class="form-control fit-ct" type="password" name="employee_password" value="{{ employee.employee_password }}" data-toggle="password">
+              <input class="form-control fit-ct pwd" type="password" name="employee_password" 
+                value="{{ employee.employee_password }}" data-toggle="password">
               <div class="input-group-append">
-                <div class="input-group-text"><i class="fa fa-eye"></i></div>
+                <div class="input-group-text reveal"><i class="fa fa-eye"></i></div>
               </div>
             </div>
           </br></br>
@@ -67,10 +68,20 @@
       <a href="/app/admin/db-maintenance">
         <button type="button" class="btn btn-outline-secondary">Back</button>
       </a>
+      <script src="//code.jquery.com/jquery-1.11.1.min.js"></script>
       <script>
         function confirm_delete() {
           if(!confirm('Are you sure?'))e.preventDefault();
         }
+
+        $(".reveal").on('click',function() {
+          var $pwd = $(".pwd");
+          if ($pwd.attr('type') === 'password') {
+              $pwd.attr('type', 'text');
+          } else {
+              $pwd.attr('type', 'password');
+          }
+        });
       </script>
     </div>
   </body>
