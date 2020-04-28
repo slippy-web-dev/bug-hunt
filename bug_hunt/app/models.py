@@ -38,7 +38,7 @@ class ReportTypes(models.Model):
 
 class Severities(models.Model):
     severity_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
-    severity    = models.CharField(max_length=32)
+    severity    = models.CharField(max_length=16)
 
 class Status(models.Model):
     status_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
@@ -46,7 +46,7 @@ class Status(models.Model):
 
 class Priorities(models.Model):
     priority_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
-    priority    = models.CharField(max_length=16)
+    priority    = models.CharField(max_length=64)
 
 class Resolutions(models.Model):
     resolution_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])

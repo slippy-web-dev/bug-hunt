@@ -411,3 +411,24 @@ def load_areas(request):
     program_id = request.GET.get('program_id')
     area_list = FunctionalAreas.objects.filter(program_id=program_id).values()
     return JsonResponse({"areas": list(area_list)})
+@login_required
+def search_bugs(request):
+    # get all lists for dropdown    
+    program_list = Programs.objects.all()
+    report_type_list = ReportTypes.objects.all()
+    severity_list = Severities.objects.all()
+    employee_list = Employees.objects.all()    
+    area_list = FunctionalAreas.objects.all()
+    status_list = Status.objects.all()
+    priority_list = Priorities.objects.all()
+    resolution_list = Resolutions.objects.all()    
+    context = { 'message' : 'This is "search for a bug" page',
+    'programs': program_list,
+    'report_type': report_type_list,
+    'severity': severity_list,
+    'employees': employee_list,
+    'areas': area_list,
+    'status': status_list,
+    'priority': priority_list,
+    'resolution': resolution_list}    
+    return render(request, 'static_files/search-bugs.html', context=context)

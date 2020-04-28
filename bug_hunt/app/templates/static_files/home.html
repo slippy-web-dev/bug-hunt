@@ -17,6 +17,7 @@
       <div class="list-group half-width">
         <a class="list-group-item list-group-item-action " href="{% url 'app:new_bug' %}">Enter a NEW Bug</a>
         <a class="list-group-item list-group-item-action " href="{% url 'app:update_bug' %}">Update EXISTING Bug</a>
+        <a class="list-group-item list-group-item-action " href="{% url 'app:search_bugs' %}">search for a Bug</a>
         {% if is_admin %}
         <a class="list-group-item list-group-item-action " href="{% url 'app:database_maintenance' %}">Database Maintenance</a>
         {% endif %}
