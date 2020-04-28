@@ -358,56 +358,104 @@ def new_bug(request):
     status_list = Status.objects.all()
     priority_list = Priorities.objects.all()
     resolution_list = Resolutions.objects.all()
-    if request.method == 'GET':
-        new_bug = BugReports()
+    new_bug = BugReports()
     if request.method == 'POST':
+        # extract request
         isReproduciple = request.POST.get('reproducible', False) == 'on'
         isDeferred = request.POST.get('deferred', False) == 'on'
+        program_id = request.POST.get('program', False)
+        report_type_id = request.POST.get('report', False)
+        severity_id = request.POST.get('severity', False)
+        summary = request.POST.get('summary', False)
+        description = request.POST.get('problem', False)
+        suggested_fix = request.POST.get('suggest_fix', False)
+        reported_by = request.POST.get('reported_by', False)
+        date_report = request.POST.get('date_report', False)
+        area_id = request.POST.get('area', False)
+        assigned_to = request.POST.get('assigned_to', False)
+        comment = request.POST.get('comment', False)
+        status_id = request.POST.get('status', False)
+        priority_id = request.POST.get('priority', False)
+        resolution_id = request.POST.get('resolution', False)
+        resolution_version = request.POST.get('resolution_version', False)
+        resolved_by = request.POST.get('resolved_by', False)
+        date_resolved = request.POST.get('date_resolved', False)
+        tested_by = request.POST.get('tested_by', False)
+        date_tested = request.POST.get('date_tested', False)
 
-        # Error messages
-        if len(request.POST.get('program')) == 0:
-            messages.add_message(request, messages.INFO, 'Please choose a program', extra_tags='program_name_error')
-        if len(request.POST.get('report')) == 0:
-            messages.add_message(request, messages.INFO, 'Please choose a report type', extra_tags='report_type_error')
-        if len(request.POST.get('severity')) == 0:
-            messages.add_message(request, messages.INFO, 'Please choose a severity', extra_tags='severity_error')
-        # if len(new_bug.su)
-        
+        # Validate Field
+        if not program_id: messages.add_message(request, messages.INFO, 'Program; ')
+        else: new_bug.program_id = Programs.objects.only('program_id').get(program_id=program_id)
+
+        if not report_type_id: messages.add_message(request, messages.INFO, 'Report Type; ')
+        else: new_bug.type_id = ReportTypes.objects.only('report_type_id').get(report_type_id=report_type_id)
+
+        if not severity_id: messages.add_message(request, messages.INFO, 'Severity; ')
+        else: new_bug.severity_id = Severities.objects.only('severity_id').get(severity_id=severity_id)
+
+        if not summary: messages.add_message(request, messages.INFO, 'Summary; ')
+        else: new_bug.summary = summary
+            
+        if not description: messages.add_message(request, messages.INFO, 'Description; ')
+        else: new_bug.description = description
+
+        if not suggested_fix: messages.add_message(request, messages.INFO, 'Suggested Fix; ')
+        else: new_bug.suggested_fix = suggested_fix
+
+        if not reported_by: messages.add_message(request, messages.INFO, 'Reported Employee; ')
+        else: new_bug.reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=reported_by)
+
+        if not date_report: messages.add_message(request, messages.INFO, 'Reported Date; ')    
+        else: new_bug.reported_on_date = date_report
+
+        if not area_id: messages.add_message(request, messages.INFO, 'Functional Area; ')
+        else: new_bug.functional_area = FunctionalAreas.objects.only('area_id').get(area_id=area_id)
+
+        if not assigned_to: messages.add_message(request, messages.INFO, 'Assiged Employee; ')
+        else: new_bug.assigned_to_emp_id = Employees.objects.only('employee_id').get(employee_id=assigned_to)
+
+        if not comment: messages.add_message(request, messages.INFO, 'Comment; ')
+        else: new_bug.comments = comment
+
+        if not status_id: messages.add_message(request, messages.INFO, 'Status; ')
+        else: new_bug.status = Status.objects.only('status_id').get(status_id=status_id)
+
+        if not priority_id: messages.add_message(request, messages.INFO, 'Priority; ')
+        else: new_bug.priority = Priorities.objects.only('priority_id').get(priority_id=priority_id)
+
+        if not resolution_id: messages.add_message(request, messages.INFO, 'Resolution; ')    
+        else: new_bug.resolution = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_id)
+
+        if not resolution_version: messages.add_message(request, messages.INFO, 'Resolution Version; ')
+        else: new_bug.resolution_version = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_version)
+
+        if not resolved_by: messages.add_message(request, messages.INFO, 'Resolved Employee; ')
+        else: new_bug.resolved_by_emp_id = Employees.objects.only('employee_id').get(employee_id=resolved_by)
+
+        if not date_resolved: messages.add_message(request, messages.INFO, 'Resolved Date; ')
+        else: new_bug.resolved_on_date = date_resolved
+
+        if not tested_by:   messages.add_message(request, messages.INFO, 'Tested Employee; ')
+        else: new_bug.tested_by_emp_id = Employees.objects.only('employee_id').get(employee_id=tested_by)
+
+        if not date_tested: messages.add_message(request, messages.INFO, 'Tested Date; ')
+        else: new_bug.tested_on_date=date_tested
+
+        new_bug.reproducable = isReproduciple
+        new_bug.treat_as_deferred = isDeferred
+
         if len(list(messages.get_messages(request))) == 0:
-            new_bug = BugReports(
-            program_id=Programs.objects.only('program_id').get(program_id=request.POST.get('program')),
-            type_id=ReportTypes.objects.only('report_type_id').get(report_type_id=request.POST.get('report')),
-            severity_id=Severities.objects.only('severity_id').get(severity_id=request.POST.get('severity')),
-            summary=request.POST.get('summary'),
-            reproducable=isReproduciple,
-            description=request.POST.get('problem'),
-            suggested_fix=request.POST.get('suggest_fix'),
-            reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('reported_by')),
-            reported_on_date=request.POST.get('date_report'),
-            functional_area=FunctionalAreas.objects.only('area_id').get(area_id=request.POST.get('area')),
-            assigned_to_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('assigned_to')),
-            comments=request.POST.get('comment'),
-            status=Status.objects.only('status_id').get(status_id=request.POST.get('status')),
-            priority=Priorities.objects.only('priority_id').get(priority_id=request.POST.get('priority')),
-            resolution=Resolutions.objects.only('resolution_id').get(resolution_id=request.POST.get('resolution')),
-            resolution_version=Resolutions.objects.only('resolution_id').get(resolution_id=request.POST.get('resolution_version')),
-            resolved_by_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('resolved_by')),
-            resolved_on_date=request.POST.get('date_resolved'),
-            tested_by_emp_id=Employees.objects.only('employee_id').get(employee_id=request.POST.get('tested_by')),
-            tested_on_date=request.POST.get('date_tested'),
-            treat_as_deferred=isDeferred)
-            print(new_bug.treat_as_deferred)
             try:
                 new_bug.save()
                 messages.add_message(request,
                     messages.INFO,
                     'New bug is added sucessfully',
                     extra_tags='bug_add_success')
+                new_bug = BugReports()
             except Exception as e:
                 print("Something went wrong")
                 print(type(e))
-
-        # else return message    
+        print(new_bug.description)
     context = { 'message' : 'This is "add new bug" page',
     'programs': program_list,
     'report_type': report_type_list,
@@ -416,7 +464,8 @@ def new_bug(request):
     'areas': area_list,
     'status': status_list,
     'priority': priority_list,
-    'resolution': resolution_list}
+    'resolution': resolution_list,
+    'new_bug': new_bug}
     return render(request, 'static_files/add-bugs.html', context=context)
 
 def load_areas(request):

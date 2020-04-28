@@ -44,3 +44,15 @@
 .half-width{
     width: 50%;
 }
+
+.container-sm{
+    margin: 1rem 4rem;
+}
+
+.inline-disp{
+    display:inline
+}
+
+label textarea{
+    vertical-align: middle;
+}
