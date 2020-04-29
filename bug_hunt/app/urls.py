@@ -20,4 +20,5 @@ urlpatterns = [
     path('admin/edit-employees/', views.edit_employees, name='edit_employees'),
     path('admin/export-data/', views.export_data, name='export_data'),
     path('load-areas/', views.load_areas, name='load_areas'),
+    path('file-upload/', views.attachment_handler, name='file_upload')
 ]
