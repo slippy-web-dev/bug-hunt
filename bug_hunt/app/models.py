@@ -53,10 +53,10 @@ class Resolutions(models.Model):
     resolution    = models.CharField(max_length=32)
     objects = models.Manager()
 
-class AttachmentTypes(models.Model):
-    attachment_type_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
-    attachment_type    = models.CharField(max_length=32)
-    objects = models.Manager()
+# class AttachmentTypes(models.Model):
+#     attachment_type_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
+#     attachment_type    = models.CharField(max_length=32)
+#     objects = models.Manager()
 
 class BugReports(models.Model):
     bug_id             = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])
@@ -81,12 +81,14 @@ class BugReports(models.Model):
     tested_by_emp_id   = models.ForeignKey('Employees', on_delete=models.CASCADE, related_name="tested_emp", null=True, blank=True)
     tested_on_date     = models.DateField(null=True, blank=True)
     treat_as_deferred  = models.BooleanField()
+    attachment         = models.ForeignKey('Attachments', on_delete=models.CASCADE, null=True, blank=True)
     objects = models.Manager()
 
 class Attachments(models.Model):
     attachment_id      = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])
     attachment_bug_id  = models.ForeignKey('BugReports', on_delete=models.CASCADE)
-    attachment_type_id = models.ForeignKey('AttachmentTypes', on_delete=models.CASCADE)
-    location           = models.CharField(max_length=255)
+    # attachment_type_id = models.ForeignKey('AttachmentTypes', on_delete=models.CASCADE)
+    attachment_name    = models.CharField(max_length=255, default='')
+    location           = models.CharField(max_length=255, default='')
     objects = models.Manager()
     
