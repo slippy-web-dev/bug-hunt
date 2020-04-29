@@ -42,12 +42,24 @@ def attachment_handler(request):
             attachment = Attachments.objects.get(pk=attachment_id)
 
             # file_path = os.path.join(settings.MEDIA_ROOT, path)
+
             file_path = os.getcwd() + attachment.location
+            file_path = file_path.replace('%20', ' ')
             print(file_path)
+            if '.jpg' in file_path:
+                content_type = 'image/jpg'
+            elif '.png' in file_path:
+                content_type = 'image/png'
+            elif '.gif' in file_path:
+                content_type = 'image/gif'
+            elif '.txt' in file_path:
+                content_type = 'text/plain'
+            else:
+                content_type = 'multipart/form-data'
             if os.path.exists(file_path):
                 
                 with open(file_path, 'rb') as fh:
-                    response = HttpResponse(fh.read(), content_type="multipart/form-data")
+                    response = HttpResponse(fh.read(), content_type=content_type)
                     response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
                     return response
             raise Http404
@@ -143,10 +155,6 @@ def update_bug(request):
         date_resolved = request.POST.get('date_resolved', False)
         tested_by = request.POST.get('tested_by', False)
         date_tested = request.POST.get('date_tested', False)
-<<<<<<< HEAD
-
-=======
->>>>>>> ca84a5fa5da3d972f19591d6662e643816665ce5
         report_type_list = ReportTypes.objects.all()
         severity_list = Severities.objects.all()
         employee_list = Employees.objects.all()
@@ -154,10 +162,6 @@ def update_bug(request):
         status_list = Status.objects.all()
         priority_list = Priorities.objects.all()
         resolution_list = Resolutions.objects.all()
-<<<<<<< HEAD
-=======
-        attachment_list = Attachments.objects.filter(attachment_bug_id=current_bug_id)
->>>>>>> ca84a5fa5da3d972f19591d6662e643816665ce5
         current_bug = BugReports(pk=current_bug_id)
         current_program = Programs.objects.get(pk=program_id)
 
@@ -218,10 +222,6 @@ def update_bug(request):
                     messages.INFO,
                     'Updated bug sucessfully',
                     extra_tags='bug_add_success')
-<<<<<<< HEAD
-=======
-                # current_bug = BugReports()
->>>>>>> ca84a5fa5da3d972f19591d6662e643816665ce5
             except Exception as e:
                 print("Something went wrong")
                 print(e)
@@ -236,10 +236,6 @@ def update_bug(request):
                 'resolution': resolution_list,
                 'current_bug': current_bug,
                 'current_date' : str(current_bug.reported_on_date),
-<<<<<<< HEAD
-=======
-                'attachments' : attachment_list,
->>>>>>> ca84a5fa5da3d972f19591d6662e643816665ce5
                 }
     return render(request, 'static_files/edit-bug.html', context=context)
 
