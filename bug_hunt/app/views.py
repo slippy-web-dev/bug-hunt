@@ -15,8 +15,22 @@ import sqlite3, re, json
 @login_required
 def index(request):
     is_admin = request.user.is_staff
+    username = request.user.username
+    access_level = 0
+    try:
+        employee_object = Employees.objects.filter(employee_username=username).values()
+        username = employee_object[0]['employee_username']
+        accesslevel_obj = AccessLevels.objects.filter(accessLevel_id=employee_object[0]['employee_accesslevel_id']).values()
+        access_level = accesslevel_obj[0]['accesslevel']
+    except Exception as e:
+        print(type(e))
+
     # test_object = { 'test' : 7 }
-    context = { 'is_admin' : is_admin }
+    context = { 
+        'is_admin' : is_admin,
+        'username': username,
+        'access_level': access_level
+         }
     return render(request, 'static_files/home.html', context=context)
 
 @login_required
@@ -360,7 +374,11 @@ def edit_employees(request):
             user_object.username = request.POST['employee_username']
             user_object.set_password(request.POST['employee_password'])
             user_object.is_staff = is_staff
-            if Employees.objects.filter(employee_username=employee_object.employee_username).exists():
+            username_exists = Employees.objects.filter(employee_username=employee_object.employee_username).exists()
+            username_change = employee_message_info['employee_username'] != employee_object.employee_username
+            print("exist", username_exists)
+            print("change", username_change)
+            if username_exists and username_change:
                 messages.add_message(request, messages.INFO, "Employee username is duplicated", extra_tags='employee_name_update')
             else:
                 try:
