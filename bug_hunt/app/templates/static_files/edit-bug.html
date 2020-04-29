@@ -22,7 +22,7 @@
               <b>{{ m_error }}</b>
             </div>
             {% else %}
-            <form action="{% url 'app:update_bug' %}" method="POST"> {% csrf_token %}
+            <form action="{% url 'app:update_bug' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
                 <div class="row">
                     <div class="col-sm">
                         <label for="program">Program</label>
@@ -275,7 +275,34 @@
                     <input type="reset" name="reset" value="Reset" class="btn btn-outline-primary">&nbsp;&nbsp;
                     <input type="button" name="cancel" value="Cancel" onclick="go_index()" class="btn btn-outline-secondary">
                 </div>
+                <br>
+                <hr>
+                <br>
             </form>
+            <form action="{% url 'app:file_upload' %}" method="GET" enctype="text/plain"> {% csrf_token %}
+              <div class="row">
+                <label for="attachments">Attachments</label>
+                <select id="attachments" name="attachment_id">
+                {% if attachments %}
+                  {% for a in attachments %}
+                  <option value="{{a.attachment_id}}">{{a.attachment_name}}</option>
+                  {% endfor %}
+                {% else %}
+                  <option value="None">None</option>
+                {% endif %}
+                </select>
+                <input type="submit" value='Open'>
+              </div>
+            </form>
+            <hr>
+            <form id="upload" action="{% url 'app:file_upload' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
+              <div class="row">
+                <input name="file_bug_id" value="{{current_bug.bug_id}}" hidden>
+                <input for="upload" type="file" name="file_attachment" value="Browse">
+                <input for="upload" type="submit" value='Add Attachment'>
+              </div>
+            </form>
+
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
             <script>
