@@ -1,15 +1,16 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse
+from django.http import HttpResponse, JsonResponse, Http404
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
 from tablib import Dataset
 from django.contrib import messages
+from django.core.files.storage import FileSystemStorage
 
-from .models import Employees, FunctionalAreas, Programs, AccessLevels, BugReports, ReportTypes, Severities, Status, Priorities, Resolutions
+from .models import Employees, FunctionalAreas, Programs, AccessLevels, BugReports, ReportTypes, Severities, Status, Priorities, Resolutions, Attachments
 from .resources import EmployeesResource, FunctionalAreasResource, ProgramsResource
-
-import sqlite3, re, json
+from bug_hunt import settings
+import sqlite3, re, json, os
 
 # Create your views here.
 @login_required
@@ -18,6 +19,62 @@ def index(request):
     # test_object = { 'test' : 7 }
     context = { 'is_admin' : is_admin }
     return render(request, 'static_files/home.html', context=context)
+
+@login_required
+def attachment_handler(request):
+    if request.method == 'GET':
+        attachment_id = request.GET.get('attachment_id', '')
+        if len(attachment_id) > 0:
+            attachment = Attachments.objects.get(pk=attachment_id)
+
+            # file_path = os.path.join(settings.MEDIA_ROOT, path)
+            file_path = os.getcwd() + attachment.location
+            print(file_path)
+            if os.path.exists(file_path):
+                
+                with open(file_path, 'rb') as fh:
+                    response = HttpResponse(fh.read(), content_type="multipart/form-data")
+                    response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
+                    return response
+            raise Http404
+    elif request.method == 'POST':
+        current_bug_id = request.POST['file_bug_id']
+        report_type_list = ReportTypes.objects.all()
+        severity_list = Severities.objects.all()
+        employee_list = Employees.objects.all()
+        area_list = FunctionalAreas.objects.all()
+        status_list = Status.objects.all()
+        priority_list = Priorities.objects.all()
+        resolution_list = Resolutions.objects.all()
+        attachment_list = Attachments.objects.filter(attachment_bug_id=current_bug_id)
+        current_bug = BugReports.objects.get(pk=current_bug_id)
+        current_program = Programs.objects.get(pk=current_bug.program_id.program_id)
+        
+        attachments = request.FILES['file_attachment']
+        fs = FileSystemStorage()
+        file_name = fs.save(attachments.name, attachments)
+        file_location = fs.url(file_name)
+
+        new_attachment = Attachments()
+        new_attachment.attachment_bug_id = BugReports.objects.get(pk=current_bug_id)
+        new_attachment.attachment_name = attachments.name
+        new_attachment.location = file_location
+        new_attachment.save()
+        messages.add_message(request, messages.INFO, 'File attached!')
+        context = { 
+            'p': current_program,
+            'report_type': report_type_list,
+            'severity': severity_list,
+            'employees': employee_list,
+            'areas': area_list,
+            'status': status_list,
+            'priority': priority_list,
+            'resolution': resolution_list,
+            'current_bug': current_bug,
+            'current_date' : str(current_bug.reported_on_date),
+            'attachments' : attachment_list,
+            }
+        return render(request, 'static_files/edit-bug.html', context=context)
 
 @login_required
 def update_bug(request):
@@ -32,7 +89,7 @@ def update_bug(request):
             status_list = Status.objects.all()
             priority_list = Priorities.objects.all()
             resolution_list = Resolutions.objects.all()
-            
+            attachment_list = Attachments.objects.filter(attachment_bug_id=bug_id)
             current_program = Programs.objects.get(pk=current_bug.program_id.program_id)
             context = { 
                 'p': current_program,
@@ -45,12 +102,11 @@ def update_bug(request):
                 'resolution': resolution_list,
                 'current_bug': current_bug,
                 'current_date' : str(current_bug.reported_on_date),
+                'attachments' : attachment_list,
                 }
         else:
             context = {'m_error' : 'No bug_id found (check url params)'}
-
     elif request.method == 'POST':
-        # extract request
         current_bug_id = request.POST.get('bug_id', False)
         isReproduciple = request.POST.get('reproducible', False) == 'on'
         isDeferred = request.POST.get('deferred', False) == 'on'
@@ -73,8 +129,16 @@ def update_bug(request):
         date_resolved = request.POST.get('date_resolved', False)
         tested_by = request.POST.get('tested_by', False)
         date_tested = request.POST.get('date_tested', False)
-
+        report_type_list = ReportTypes.objects.all()
+        severity_list = Severities.objects.all()
+        employee_list = Employees.objects.all()
+        area_list = FunctionalAreas.objects.all()
+        status_list = Status.objects.all()
+        priority_list = Priorities.objects.all()
+        resolution_list = Resolutions.objects.all()
+        attachment_list = Attachments.objects.filter(attachment_bug_id=current_bug_id)
         current_bug = BugReports(pk=current_bug_id)
+        current_program = Programs.objects.get(pk=program_id)
 
         # Validate Field
         if not program_id: messages.add_message(request, messages.INFO, 'Program; ')
@@ -131,15 +195,31 @@ def update_bug(request):
                 current_bug.save()
                 messages.add_message(request,
                     messages.INFO,
-                    'New bug is added sucessfully',
+                    'Updated bug sucessfully',
                     extra_tags='bug_add_success')
-                current_bug = BugReports()
+                # current_bug = BugReports()
             except Exception as e:
                 print("Something went wrong")
                 print(e)
-        context = {}
+        context = { 
+                'p': current_program,
+                'report_type': report_type_list,
+                'severity': severity_list,
+                'employees': employee_list,
+                'areas': area_list,
+                'status': status_list,
+                'priority': priority_list,
+                'resolution': resolution_list,
+                'current_bug': current_bug,
+                'current_date' : str(current_bug.reported_on_date),
+                'attachments' : attachment_list,
+                }
     return render(request, 'static_files/edit-bug.html', context=context)
 
+def handle_file_upload(file, file_name):
+    with open(file_name + '.txt', 'wb+') as destination:
+        for chunk in file.chunks():
+            destination.write(chunk)
 
 @staff_member_required
 def database_maintenance(request):

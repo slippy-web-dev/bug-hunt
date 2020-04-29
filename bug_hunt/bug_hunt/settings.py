@@ -136,3 +136,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL = '/app/login/'
 LOGIN_REDIRECT_URL = '/app/index/'
 LOGOUT_REDIRECT_URL = '/app/login/'
+MEDIA_URL = '/attachments/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'attachments')
