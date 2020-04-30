@@ -1,162 +1,240 @@
 <!DOCTYPE html>
 {% load static %}
+{% load crispy_forms_tags %}
 <link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
 <link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
 <link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
     <head>
-        <title>Bug Search Page</title>        
         <meta charset="utf-8">
-        <titleBug Search</title>
+        <title>Search for Bug Reports</title>
     </head>
     <body>
-        <h1>Bug Search Page </h1>
-        <div class="container">
-        <form action="{% url 'app:search_bugs' %}" method="POST"> {% csrf_token %}
-          <tr>
-                <td><label for="program">Program</label></td>
-                <td> 
-                    <select id="program" onchange="load_areas()" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        {% for p in programs %}
-                        <option value="{{ p.program_id }}">{{ p.program_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
+        <div class="container-sm">
+            {% if messages %}
+            <div  class="alert alert-success fit-ct">
+                {% for message in messages %}
+                <b>{{ message }}</b>
+                {% endfor %}
+            </div>  
+            {% endif %}
 
-                <br>
-                <br>                
+            <form action="{% url 'app:results' %}" method="POST"> {% csrf_token %}
+                
+                    <div class="form-group row">
+                        <label for="program" class="col-sm-2 col-form-label">Program</label>
+                        <div class="col-sm-10">
+                            <select id="program" onchange="load_areas()" name="program" class="form-control fit-ct inline-disp">
+                                <option value="" selected>ALL</option>
+                                {% for p in programs %}
+                                <option value="{{ p.program_id }}">{{ p.program_name }} - {{p.program_version}} - {{p.program_release}}</option>                                                  
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="report" class="col-sm-2 col-form-label">Report Type</label>
+                        <div class="col-sm-10">
+                            <select id="report"  name="report" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for rt in report_type %}
+                                    {% if new_bug.type_id.report_type_id == rt.report_type_id %}
+                                    <option value="{{ rt.report_type_id }}" selected>{{ rt.report_type }}</option>
+                                    {% else %}
+                                    <option value="{{ rt.report_type_id }}">{{ rt.report_type }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="severity" class="col-sm-2 col-form-label">Severity</label>
+                        <div class="col-sm-10">
+                            <select id="severity" name="severity" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for st in severity %}
+                                    {% if new_bug.severity_id.severity_id == st.severity_id %}
+                                    <option value="{{ st.severity_id }}" selected>{{ st.severity }}</option>
+                                    {% else %}
+                                    <option value="{{ st.severity_id }}">{{ st.severity }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>    
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="reported_by" class="col-sm-2 col-form-label">Reported By</label>
+                        <div class="col-sm-10">
+                            <select id="reported_by" name="reported_by" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for e in employees %}
+                                    {% if new_bug.reported_by_emp_id.employee_id == e.employee_id %}
+                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
+                                    {% else %}
+                                    <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="date_report" class="col-sm-2 col-form-label">Date</label>
+                        <div class="col-sm-10">
+                            <input id="date_report" type="date" name="date_report" class="form-control fit-ct inline-disp" value={{new_bug.reported_on_date}}>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="area" class="col-sm-2 col-form-label">Functional Area</label>
+                        <div class="col-sm-10">
+                            <select id="area"  name="area" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for a in areas %}
+                                <option value="{{ a.area_id }}">{{ a.area }}</option>
+                                {% endfor %}
+                            </select>
+                        </div>    
+                    </div>
+                    <div class="form-group row">
+                        <label for="assigned_to" class="col-sm-2 col-form-label">Assigned To</label>
+                        <div class="col-sm-10">
+                            <select id="assigned_to" name="assigned_to" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for e in employees %}
+                                    {% if new_bug.assigned_to_emp_id.employee_id == e.employee_id %}
+                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
+                                    {% else %}
+                                    <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row"></div>
+                
+                    <div class="form-group row">
+                        <label for="assigned_to" class="col-sm-2 col-form-label">Status</label>
+                        <div class="col-sm-10">
+                            <select id="status" name="status" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for s in status %}
+                                    {% if new_bug.status.status_id == s.status_id %}
+                                    <option value="{{ s.status_id }}" selected>{{ s.status }}</option>
+                                    {% else %}
+                                    <option value="{{ s.status_id }}">{{ s.status }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="assigned_to" class="col-sm-2 col-form-label">Priority</label>
+                        <div class="col-sm-10">
+                            <select id="priority" name="priority" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for p in priority %}
+                                    {% if new_bug.priority.priority_id == p.priority_id %}
+                                    <option value="{{ p.priority_id }}" selected>{{ p.priority }}</option>
+                                    {% else %}
+                                    <option value="{{ p.priority_id }}">{{ p.priority }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="assigned_to" class="col-sm-2 col-form-label">Resolution</label>                        
+                        <div class="col-sm-10">
+                            <select id="resolution_version" name="resolution_version" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for r in resolution %}
+                                    {% if new_bug.resolution_version.resolution_id == r.resolution_id %}
+                                    <option value="{{ r.resolution_id }}" selected>{{ r.resolution }}</option>
+                                    {% else %}
+                                    <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                
+                    <div class="form-group row">
+                        <label for="resolved_by" class="col-sm-2 col-form-label">Resolved By</label>
+                        <div class="col-sm-10">
+                            <select id="resolved_by" name="resolved_by" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for e in employees %}
+                                    {% if new_bug.resolved_by_emp_id.employee_id == e.employee_id %}
+                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
+                                    {% else %}
+                                    <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                                    {% endif %} 
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="resolved_by" class="col-sm-2 col-form-label">Date Resolved</label>
+                        <div class="col-sm-10">
+                            <input id="date_resolved" type="date" name="date_resolved" class="form-control fit-ct inline-disp" value={{new_bug.resolved_on_date}}>
+                        </div>
+                    </div>
+                    <div class="form-group row">                        
+                        <label for="resolved_by" class="col-sm-2 col-form-label">Tested By</label>
+                        <div class="col-sm-10">
+                            <select id="tested_by" name="tested_by" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
+                                {% for e in employees %}
+                                    {% if new_bug.tested_by_emp_id.employee_id == e.employee_id %}
+                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
+                                    {% else %}
+                                    <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
+                                    {% endif %}
+                                {% endfor %}
+                            </select>
+                        </div>
+                    </div>
+                    <div class="form-group row">
+                        <label for="resolved_by" class="col-sm-2 col-form-label">Date Tested</label>
+                        <div class="col-sm-10">
+                            <input id="date_tested" type="date" name="date_tested" class="form-control fit-ct inline-disp" value={{new_bug.tested_on_date}}>
+                        </div>
+                    </div>
+                <div class="row">
+                    <input type="submit" name="search" value="Search" class="btn btn-outline-primary">&nbsp;&nbsp;
+                    <input type="reset" name="reset" value="Reset" class="btn btn-outline-primary" onClick="window.location.reload()">&nbsp;&nbsp;
+                    <input type="button" name="cancel" value="Cancel" onclick="go_index()" class="btn btn-outline-secondary">
+                </div>
+            </form>
 
-                <td><label for="report">Report Type</label></td>
-                <td>
-                    <select id="report" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        {% for rt in report_type %}
-                        <option value="{{ rt.report_type_id }}">{{ rt.report_type }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
 
-                <br>
-                <br>
-
-                <td><label for="severity">Severity</label></td>
-                <td>
-                    <select id="severity">
-                        <option value="">ALL</option>
-                        {% for st in severity %}
-                        <option value="{{ st.severity_id }}">{{ st.severity }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-
-                <br>
-                <br>
-
-                <td><label for="reported_by">Reported By</label></td>
-                <td>
-                    <select id="reported_by" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        {% for e in employees %}
-                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-
-                <br>
-                <br>
             
-                <td><label for="area">Functional Area</label></td>
-                <td>
-                    <select id="area" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        <!-- {% for a in areas %}
-                        <option value="{{ a.area_id }}">{{ a.area }}</option>
-                        {% endfor %} -->
-                    </select>
-                </td>
 
-                <br>
-                <br>
 
-                <td><label for="assigned_to">Assigned To</label></td>
-                <td>
-                    <select id="assigned_to">
-                        <option value="">ALL</option>
-                        {% for e in employees %}
-                        <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-            
-                <br>
-                <br>
 
-                <td><label for="status">Status</label></td>
-                <td>
-                    <select id="status" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        {% for s in status %}
-                        <option value="{{ s.status_id }}">{{ s.status }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
+        
+            <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
+            <script>
+                function go_index(){
+                    window.location="/app/index"
+                }
 
-                <br>
-                <br>
+                function load_areas(){
+                    $('#area').empty();
+                    var program_id = document.getElementById("program").value
+                    $.ajax({
+                        url: '../load-areas/',
+                        data: {'program_id': program_id},
+                        success: function(data) {
+                            $('#area').append('<option value="">' +'ALL'+ '</option>');
+                            $.each(data.areas, function(index, value) {
+                                $('#area').append('<option value="' + value.area_id + '">' + value.area + '</option>');
+                            });
+                        }
+                    });
+                }
+            </script>
 
-                <td><label for="priority">Priority</label></td>
-                <td>
-                    <select id="priority" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        {% for p in priority %}
-                        <option value="{{ p.priority_id }}">{{ p.priority }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-
-                <br>
-                <br>
-
-                <td><label for="resolution">Resolution</label></td>
-                <td>
-                    <select id="resolution" style="margin-right:5rem;">
-                        <option value="">ALL</option>
-                        {% for r in resolution %}
-                        <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
-                        {% endfor %}
-                    </select>
-                </td>
-          </tr>
-          <br>
-          <br>
-                <input class="btn btn-outline-primary" type="submit" value="Submit">
-                <input class="btn btn-outline-primary" type="reset" value="Reset">
-                <input class="btn btn-outline-primary" type="cancel" value="cancel" onclick="go_index()">
-                    
-        </form>
-
-        <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
-        <script>
-            function go_index(){
-                window.location="/app/index"
-            }
-
-            function load_areas(){
-                $('#area').empty();
-                var program_id = document.getElementById("program").value
-                $.ajax({
-                    url: '../load-areas/',
-                    data: {'program_id': program_id},
-                    success: function(data) {
-                        $('#area').append('<option value="">' + '</option>');
-                        $.each(data.areas, function(index, value) {
-                            $('#area').append('<option value="' + value.area_id + '">' + value.area + '</option>');
-                        });
-                    }
-                });
-            }
-        </script>
-    </div>
+        </div>
     </body>
 </html>

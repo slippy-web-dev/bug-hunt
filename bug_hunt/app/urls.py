@@ -11,6 +11,7 @@ urlpatterns = [
     path('new-bug/', views.new_bug, name='new_bug'),
     path('update-bug/', views.update_bug, name='update_bug'),
     path('search-bugs/', views.search_bugs, name='search_bugs'),
+    path('results/', views.search_bugs, name='results'),
     path('admin/db-maintenance/', views.database_maintenance, name='database_maintenance'),
     path('admin/edit-areas/', views.edit_areas, name='edit_areas'),
     path('admin/add-areas/', views.add_areas, name='add_areas'),
