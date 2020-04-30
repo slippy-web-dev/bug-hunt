@@ -111,8 +111,8 @@ def attachment_handler(request):
 @login_required
 def update_bug(request):
     if request.method == 'GET':
-        bug_id = request.GET.get('bug_id', '')
-        if bug_id.isnumeric() and (len(bug_id) > 0) and BugReports.objects.get(pk=bug_id):
+        bug_id = request.GET.get('bug_id', '')        
+        if bug_id.isnumeric() and (len(bug_id) > 0) and BugReports.objects.filter(pk=bug_id):
             current_bug = BugReports.objects.get(pk=bug_id)
             report_type_list = ReportTypes.objects.all()
             severity_list = Severities.objects.all()
@@ -138,7 +138,7 @@ def update_bug(request):
                 'tested_on_date' : str(current_bug.tested_on_date),
                 'attachments' : attachment_list,
                 }
-        elif not bug_id.isnumeric():
+        elif not bug_id.isnumeric() or not BugReports.objects.filter(pk=bug_id):
             context = {'m_error' : 'No bug_id found (check url params)'}                
         else:
             reports = BugReports.objects.all()
