@@ -1,5 +1,5 @@
 from django.shortcuts import render
-from django.http import HttpResponse, JsonResponse, Http404
+from django.http import HttpResponse, JsonResponse, Http404, HttpResponseRedirect
 from django.contrib.auth.decorators import login_required
 from django.contrib.auth.models import User
 from django.contrib.admin.views.decorators import staff_member_required
@@ -41,7 +41,7 @@ def index(request):
 def attachment_handler(request):
     if request.method == 'GET':
         attachment_id = request.GET.get('attachment_id', '')
-        if len(attachment_id) > 0:
+        if attachment_id.isnumeric() and (len(attachment_id) > 0):
             attachment = Attachments.objects.get(pk=attachment_id)
 
             # file_path = os.path.join(settings.MEDIA_ROOT, path)
@@ -66,6 +66,9 @@ def attachment_handler(request):
                     response['Content-Disposition'] = 'inline; filename=' + os.path.basename(file_path)
                     return response
             raise Http404
+        else:
+            messages.info(request, 'This report has no attachment!')
+            return HttpResponseRedirect('/app/update-bug')
     elif request.method == 'POST':
         current_bug_id = request.POST['file_bug_id']
         report_type_list = ReportTypes.objects.all()
