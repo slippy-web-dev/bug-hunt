@@ -79,7 +79,7 @@
                 <br>
                 <div class="row">
                     <div class="col-12">
-                        <label for="suggest_fix" style="margin-right: 1rem;">Suggested Fix*
+                        <label for="suggest_fix" style="margin-right: 1rem;">Suggested Fix
                             <textarea id="suggest_fix" rows="3" cols="70" name="suggest_fix" value="{{new_bug.suggested_fix}}" 
                                 class="form-control fit-ct inline-disp" style="margin-left: 1rem;">{{new_bug.suggested_fix}}</textarea>
                         </label>
@@ -196,16 +196,8 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <select id="resolution_version" name="resolution_version" class="form-control fit-ct inline-disp">
-                            <option value=""></option>
-                            {% for r in resolution %}
-                                {% if new_bug.resolution_version.resolution_id == r.resolution_id %}
-                                <option value="{{ r.resolution_id }}" selected>{{ r.resolution }}</option>
-                                {% else %}
-                                <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
-                                {% endif %} 
-                            {% endfor %}
-                        </select>
+                        <input type="text" id="resolution_version" name="resolution_version" 
+                            value="{{new_bug.resolution_version}}" class="form-control fit-ct inline-disp">
                     </div>
                 </div>
                 <br>

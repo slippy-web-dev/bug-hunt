@@ -18,17 +18,20 @@ def index(request):
     is_admin = request.user.is_staff
     username = request.user.username
     access_level = 0
+    is_manager = False 
     try:
         employee_object = Employees.objects.filter(employee_username=username).values()
         username = employee_object[0]['employee_username']
         accesslevel_obj = AccessLevels.objects.filter(accessLevel_id=employee_object[0]['employee_accesslevel_id']).values()
-        access_level = accesslevel_obj[0]['accesslevel']
+        access_level = accesslevel_obj[0]['accesslevel']       
+        is_manager = ( access_level == '2')
     except Exception as e:
         print(type(e))
 
     # test_object = { 'test' : 7 }
     context = { 
         'is_admin' : is_admin,
+        'is_manager': is_manager,
         'username': username,
         'access_level': access_level
          }
@@ -649,8 +652,7 @@ def new_bug(request):
         if not description: messages.add_message(request, messages.INFO, 'Description; ')
         else: new_bug.description = description
 
-        if not suggested_fix: messages.add_message(request, messages.INFO, 'Suggested Fix; ')
-        else: new_bug.suggested_fix = suggested_fix
+        if suggested_fix: new_bug.suggested_fix = suggested_fix
 
         if not reported_by: messages.add_message(request, messages.INFO, 'Reported Employee; ')
         else: new_bug.reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=reported_by)
@@ -670,7 +672,7 @@ def new_bug(request):
 
         if resolution_id: new_bug.resolution = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_id)
 
-        if resolution_version: new_bug.resolution_version = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_version)
+        if resolution_version: new_bug.resolution_version = resolution_version
 
         if resolved_by: new_bug.resolved_by_emp_id = Employees.objects.only('employee_id').get(employee_id=resolved_by)
 
@@ -769,8 +771,9 @@ def search_bugs(request):
         if len(date_tested)>0:
             MyDict.update({'tested_on_date':date_tested})
 
-
-        reportList = BugReports.objects.filter(**MyDict)        
+        reportList = BugReports.objects.filter(**MyDict)     
+        if len(reportList) == 0:
+            messages.add_message(request, messages.INFO, "No results found")
         context = {
             'queryset': reportList
         }

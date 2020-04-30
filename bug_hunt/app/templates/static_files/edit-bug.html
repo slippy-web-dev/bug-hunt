@@ -281,28 +281,40 @@
             </form>
             <form action="{% url 'app:file_upload' %}" method="GET" enctype="text/plain"> {% csrf_token %}
               <div class="row">
-                <label for="attachments">Attachments</label>
-                <select id="attachments" name="attachment_id">
-                {% if attachments %}
-                  {% for a in attachments %}
-                  <option value="{{a.attachment_id}}">{{a.attachment_name}}</option>
-                  {% endfor %}
-                {% else %}
-                  <option value="None">None</option>
-                {% endif %}
-                </select>
-                <input type="submit" value='Open'>
+                  <div class="col-12">
+                    <label for="attachments">Attachments
+                        <select class="form-control fit-ct inline-disp" id="attachments" name="attachment_id">
+                        {% if attachments %}
+                        {% for a in attachments %}
+                        <option value="{{a.attachment_id}}">{{a.attachment_name}}</option>
+                        {% endfor %}
+                        {% else %}
+                        <option value="None">None</option>
+                        {% endif %}
+                        </select>
+                        <input type="submit" value='Open' class="btn btn-outline-primary" style="vertical-align: initial;">
+                    </label>
+                </div>
               </div>
             </form>
             <hr>
             <form id="upload" action="{% url 'app:file_upload' %}" method="POST" enctype="multipart/form-data"> {% csrf_token %}
-              <div class="row">
-                <input name="file_bug_id" value="{{current_bug.bug_id}}" hidden>
-                <input for="upload" type="file" name="file_attachment" value="Browse">
-                <input for="upload" type="submit" value='Add Attachment'>
-              </div>
+                <div class="row">
+                    <div class="col-6">
+                        <div class="custom-file">
+                            <input name="file_bug_id" value="{{current_bug.bug_id}}" hidden>
+                            <input for="upload" type="file" name="file_attachment" value="Browse" 
+                                class="custom-file-input" id="validatedCustomFile" required>
+                            <label class="custom-file-label" for="validatedCustomFile">Choose file...</label>
+                        </div>
+                    </div>
+                        <div class="col-4">
+                            <input class="btn btn-outline-primary" for="upload" type="submit" value='Add Attachment'>
+                        </div>
+                        <div class="col-2"></div>
+                    </div>
             </form>
-
+            <br>
 
             <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.4.1/jquery.min.js"></script>
             <script>

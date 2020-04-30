@@ -10,8 +10,7 @@ class Programs(models.Model):
     objects = models.Manager()
 
     def __str__(self):
-        return self.program_name
-
+        return str(self.program_name + " - " + self.program_version + " - " + self.program_release)
     
 class FunctionalAreas(models.Model):
     area_id    = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])
@@ -70,7 +69,7 @@ class BugReports(models.Model):
     summary            = models.CharField(max_length=255)
     reproducable       = models.BooleanField()
     description        = models.CharField(max_length=255)
-    suggested_fix      = models.CharField(max_length=255)
+    suggested_fix      = models.CharField(max_length=255, blank=True)
     reported_by_emp_id = models.ForeignKey('Employees', on_delete=models.CASCADE, related_name="reported_emp")
     reported_on_date   = models.DateField()
     functional_area    = models.ForeignKey('FunctionalAreas', on_delete=models.CASCADE, null=True, blank=True)
@@ -79,7 +78,7 @@ class BugReports(models.Model):
     status             = models.ForeignKey('Status', on_delete=models.CASCADE, null=True, blank=True)
     priority           = models.ForeignKey('Priorities', on_delete=models.CASCADE, null=True, blank=True)
     resolution         = models.ForeignKey('Resolutions', on_delete=models.CASCADE, related_name="resol", null=True, blank=True)
-    resolution_version = models.ForeignKey('Resolutions', on_delete=models.CASCADE, related_name="resol_version", null=True, blank=True)
+    resolution_version = models.CharField(max_length=255, blank=True)
     resolved_by_emp_id = models.ForeignKey('Employees', on_delete=models.CASCADE, related_name="resolved_emp", null=True, blank=True)
     resolved_on_date   = models.DateField(null=True, blank=True)
     tested_by_emp_id   = models.ForeignKey('Employees', on_delete=models.CASCADE, related_name="tested_emp", null=True, blank=True)

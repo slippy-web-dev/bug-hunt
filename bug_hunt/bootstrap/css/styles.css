@@ -56,3 +56,11 @@
 label textarea{
     vertical-align: middle;
 }
+
+label select {
+    margin-left: 0.5rem;
+}
+
+label input {
+    margin-left: 0.2rem;
+}
