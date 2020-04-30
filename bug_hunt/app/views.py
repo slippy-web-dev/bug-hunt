@@ -113,8 +113,8 @@ def update_bug(request):
             current_bug = BugReports.objects.get(pk=bug_id)
             report_type_list = ReportTypes.objects.all()
             severity_list = Severities.objects.all()
-            employee_list = Employees.objects.all()
-            area_list = FunctionalAreas.objects.all()
+            employee_list = Employees.objects.all()            
+            area_list = FunctionalAreas.objects.filter(program_id=current_bug.program_id)
             status_list = Status.objects.all()
             priority_list = Priorities.objects.all()
             resolution_list = Resolutions.objects.all()
@@ -133,11 +133,19 @@ def update_bug(request):
                 'priority': priority_list,
                 'resolution': resolution_list,
                 'current_bug': current_bug,
+                'current_date' : str(current_bug.reported_on_date),
+                'resolved_on_date' : str(current_bug.resolved_on_date),
+                'tested_on_date' : str(current_bug.tested_on_date),
                 'attachments' : attachment_list,
                 'bug_date': bug_date,
                 }
         else:
-            context = {'m_error' : 'No bug_id found (check url params)'}
+            reports = BugReports.objects.all()
+            if reports:
+                context = {'queryset': reports}
+                return render(request, 'static_files/results.html', context=context)
+            else:
+                context = {'m_error' : 'No bug_id found (check url params)'}
     elif request.method == 'POST':
         current_bug_id = request.POST.get('bug_id', False)
         isReproduciple = request.POST.get('reproducible', False) == 'on'
@@ -673,6 +681,7 @@ def new_bug(request):
         if comment: new_bug.comments = comment
 
         if status_id: new_bug.status = Status.objects.only('status_id').get(status_id=status_id)
+        else: new_bug.status = Status.objects.first()
 
         if priority_id: new_bug.priority = Priorities.objects.only('priority_id').get(priority_id=priority_id)
 
@@ -748,33 +757,33 @@ def search_bugs(request):
 
         #Construct the query based on the values provided
         MyDict = {}
-        if len(program_id)>0:
+        if program_list is not None and program_id !='':
             MyDict.update({'program_id':program_id})
-        if len(report_type_id)>0:
+        if report_type_id is not None and report_type_id !='' :
             MyDict.update({'type_id':report_type_id})
-        if len(severity_id)>0:
+        if severity_id  is not None and severity_id !='' :
             MyDict.update({'severity_id':severity_id})
-        if len(reported_by)>0:
+        if reported_by  is not None and reported_by !='':
             MyDict.update({'reported_by_emp_id':reported_by})
-        if len(date_report)>0:
+        if date_report  is not None and date_report !='' :
             MyDict.update({'reported_on_date':date_report})
-        if len(area_id)>0:
+        if area_id  is not None and area_id !='' :
             MyDict.update({'functional_area':area_id})
-        if len(assigned_to)>0:
+        if assigned_to  is not None and  assigned_to !='':
             MyDict.update({'assigned_to_emp_id':assigned_to})
-        if len(status_id)>0:
+        if status_id  is not None and status_id !='' :
             MyDict.update({'status':status_id})
-        if len(priority_id)>0:
+        if priority_id  is not None and priority_id !='':
             MyDict.update({'priority':priority_id})
-        if len(resolution_version)>0:
+        if resolution_version  is not None and resolution_version !='':
             MyDict.update({'resolution_version':resolution_version})
-        if len(resolved_by)>0:
+        if resolved_by  is not None and resolved_by !='' :
             MyDict.update({'resolved_by_emp_id':resolved_by})
-        if len(date_resolved)>0:
+        if date_resolved  is not None and date_resolved !='':
             MyDict.update({'resolved_on_date':date_resolved})
-        if len(tested_by)>0:
+        if tested_by  is not None and tested_by !='':
             MyDict.update({'tested_by_emp_id':tested_by})
-        if len(date_tested)>0:
+        if date_tested  is not None and date_tested !='':
             MyDict.update({'tested_on_date':date_tested})
 
         reportList = BugReports.objects.filter(**MyDict)     

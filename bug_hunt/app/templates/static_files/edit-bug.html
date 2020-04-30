@@ -239,8 +239,7 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <input id="date_resolved" type="date" name="date_resolved" 
-                            class="form-control fit-ct inline-disp" value="{{bug_date.resolved}}">
+                        <input id="date_resolved" type="date" name="date_resolved" class="form-control fit-ct inline-disp" value="{{resolved_on_date}}">
                     </div>
                     <div class="col-3">
                         <select id="tested_by" name="tested_by" class="form-control fit-ct inline-disp">
@@ -255,8 +254,7 @@
                         </select>
                     </div>
                     <div class="col-sm-2">
-                        <input id="date_tested" type="date" name="date_tested" 
-                            class="form-control fit-ct inline-disp" value={{bug_date.tested}}>
+                        <input id="date_tested" type="date" name="date_tested" class="form-control fit-ct inline-disp" value="{{tested_on_date}}">
                     </div>
                     <div class="col-sm-1" style="text-align: center;">
                         <input id="deferred_checkbox" type="checkbox" name="deferred" {% if current_bug.treat_as_deferred %} checked {% endif %}>
