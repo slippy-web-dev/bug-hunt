@@ -712,7 +712,7 @@ def load_areas(request):
     return JsonResponse({"areas": list(area_list)})
 @login_required
 def search_bugs(request):
-    # get all lists for dropdown    
+    # get all lists for dropdown
     program_list = Programs.objects.all()
     report_type_list = ReportTypes.objects.all()
     severity_list = Severities.objects.all()
@@ -720,14 +720,70 @@ def search_bugs(request):
     area_list = FunctionalAreas.objects.all()
     status_list = Status.objects.all()
     priority_list = Priorities.objects.all()
-    resolution_list = Resolutions.objects.all()    
-    context = { 'message' : 'This is "search for a bug" page',
-    'programs': program_list,
-    'report_type': report_type_list,
-    'severity': severity_list,
-    'employees': employee_list,
-    'areas': area_list,
-    'status': status_list,
-    'priority': priority_list,
-    'resolution': resolution_list}    
-    return render(request, 'static_files/search-bugs.html', context=context)
+    resolution_list = Resolutions.objects.all()
+    if request.method == 'POST':       
+        # extract request
+        program_id = request.POST.get('program', False)
+        report_type_id = request.POST.get('report', False)
+        severity_id = request.POST.get('severity', False)                        
+        reported_by = request.POST.get('reported_by', False)
+        date_report = request.POST.get('date_report', False)
+        area_id = request.POST.get('area', False)
+        assigned_to = request.POST.get('assigned_to', False)        
+        status_id = request.POST.get('status', False)
+        priority_id = request.POST.get('priority', False)        
+        resolution_version = request.POST.get('resolution_version', False)
+        resolved_by = request.POST.get('resolved_by', False)
+        date_resolved = request.POST.get('date_resolved', False)
+        tested_by = request.POST.get('tested_by', False)
+        date_tested = request.POST.get('date_tested', False)        
+
+        #Construct the query based on the values provided
+        MyDict = {}
+        if len(program_id)>0:
+            MyDict.update({'program_id':program_id})
+        if len(report_type_id)>0:
+            MyDict.update({'type_id':report_type_id})
+        if len(severity_id)>0:
+            MyDict.update({'severity_id':severity_id})
+        if len(reported_by)>0:
+            MyDict.update({'reported_by_emp_id':reported_by})
+        if len(date_report)>0:
+            MyDict.update({'reported_on_date':date_report})
+        if len(area_id)>0:
+            MyDict.update({'functional_area':area_id})
+        if len(assigned_to)>0:
+            MyDict.update({'assigned_to_emp_id':assigned_to})
+        if len(status_id)>0:
+            MyDict.update({'status':status_id})
+        if len(priority_id)>0:
+            MyDict.update({'priority':priority_id})
+        if len(resolution_version)>0:
+            MyDict.update({'resolution_version':resolution_version})
+        if len(resolved_by)>0:
+            MyDict.update({'resolved_by_emp_id':resolved_by})
+        if len(date_resolved)>0:
+            MyDict.update({'resolved_on_date':date_resolved})
+        if len(tested_by)>0:
+            MyDict.update({'tested_by_emp_id':tested_by})
+        if len(date_tested)>0:
+            MyDict.update({'tested_on_date':date_tested})
+
+
+        reportList = BugReports.objects.filter(**MyDict)        
+        context = {
+            'queryset': reportList
+        }
+
+        return render(request, 'static_files/results.html', context=context)
+    else:        
+        context = { 'message' : 'This is "search for a bug" page',
+        'programs': program_list,
+        'report_type': report_type_list,
+        'severity': severity_list,
+        'employees': employee_list,
+        'areas': area_list,
+        'status': status_list,
+        'priority': priority_list,
+        'resolution': resolution_list}    
+        return render(request, 'static_files/search-bugs.html', context=context)

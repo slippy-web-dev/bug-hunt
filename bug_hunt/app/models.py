@@ -9,6 +9,10 @@ class Programs(models.Model):
     program_release = models.CharField(max_length=32)
     objects = models.Manager()
 
+    def __str__(self):
+        return self.program_name
+
+    
 class FunctionalAreas(models.Model):
     area_id    = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])
     area       = models.CharField(max_length=32)
@@ -83,6 +87,8 @@ class BugReports(models.Model):
     treat_as_deferred  = models.BooleanField()
     attachment         = models.ForeignKey('Attachments', on_delete=models.CASCADE, null=True, blank=True)
     objects = models.Manager()
+
+        
 
 class Attachments(models.Model):
     attachment_id      = models.AutoField(primary_key=True, validators=[MinValueValidator(-1024),MaxValueValidator(1023)])
