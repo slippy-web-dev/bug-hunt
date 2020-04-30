@@ -120,9 +120,6 @@ def update_bug(request):
             resolution_list = Resolutions.objects.all()
             attachment_list = Attachments.objects.filter(attachment_bug_id=bug_id)
             current_program = Programs.objects.get(pk=current_bug.program_id.program_id)
-            bug_date = {'reported': str(current_bug.reported_on_date),
-                'resolved': str(current_bug.resolved_on_date),
-                'tested':  str(current_bug.tested_on_date)}
             context = { 
                 'p': current_program,
                 'report_type': report_type_list,
@@ -133,7 +130,7 @@ def update_bug(request):
                 'priority': priority_list,
                 'resolution': resolution_list,
                 'current_bug': current_bug,
-                'current_date' : str(current_bug.reported_on_date),
+                'reported_on_date' : str(current_bug.reported_on_date),
                 'resolved_on_date' : str(current_bug.resolved_on_date),
                 'tested_on_date' : str(current_bug.tested_on_date),
                 'attachments' : attachment_list,
