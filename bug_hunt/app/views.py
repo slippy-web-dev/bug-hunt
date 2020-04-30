@@ -134,7 +134,6 @@ def update_bug(request):
                 'resolved_on_date' : str(current_bug.resolved_on_date),
                 'tested_on_date' : str(current_bug.tested_on_date),
                 'attachments' : attachment_list,
-                'bug_date': bug_date,
                 }
         else:
             reports = BugReports.objects.all()
