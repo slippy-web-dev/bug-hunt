@@ -104,7 +104,8 @@
                     </div>
                     <div class="col-4">
                         <label for="date_report">Date*</label>
-                        <input id="date_report" type="date" name="date_report" class="form-control fit-ct inline-disp" value="{{current_date}}">
+                        <input id="date_report" type="date" name="date_report" 
+                            class="form-control fit-ct inline-disp" value="{{bug_date.reported}}">
                     </div>
                     <div class="col-4"></div>
                 </div>
@@ -202,16 +203,8 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <select id="resolution_version" name="resolution_version" class="form-control fit-ct inline-disp">
-                            <option value=""></option>
-                            {% for r in resolution %}
-                                {% if current_bug.resolution_version.resolution_id == r.resolution_id %}
-                                <option value="{{ r.resolution_id }}" selected>{{ r.resolution }}</option>
-                                {% else %}
-                                <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
-                                {% endif %} 
-                            {% endfor %}
-                        </select>
+                        <input type="text" id="resolution_version" name="resolution_version" 
+                            value="{{new_bug.resolution_version}}" class="form-control fit-ct inline-disp">
                     </div>
                 </div>
                 <br>
@@ -246,7 +239,8 @@
                         </select>
                     </div>
                     <div class="col-sm-3">
-                        <input id="date_resolved" type="date" name="date_resolved" class="form-control fit-ct inline-disp" value={{current_bug.resolved_on_date}}>
+                        <input id="date_resolved" type="date" name="date_resolved" 
+                            class="form-control fit-ct inline-disp" value="{{bug_date.resolved}}">
                     </div>
                     <div class="col-3">
                         <select id="tested_by" name="tested_by" class="form-control fit-ct inline-disp">
@@ -261,7 +255,8 @@
                         </select>
                     </div>
                     <div class="col-sm-2">
-                        <input id="date_tested" type="date" name="date_tested" class="form-control fit-ct inline-disp" value={{current_bug.tested_on_date}}>
+                        <input id="date_tested" type="date" name="date_tested" 
+                            class="form-control fit-ct inline-disp" value={{bug_date.tested}}>
                     </div>
                     <div class="col-sm-1" style="text-align: center;">
                         <input id="deferred_checkbox" type="checkbox" name="deferred" {% if current_bug.treat_as_deferred %} checked {% endif %}>
@@ -272,7 +267,6 @@
                 <br>
                 <div class="row">
                     <input type="submit" name="submit" value="Submit" class="btn btn-outline-primary">&nbsp;&nbsp;
-                    <input type="reset" name="reset" value="Reset" class="btn btn-outline-primary">&nbsp;&nbsp;
                     <input type="button" name="cancel" value="Cancel" onclick="go_index()" class="btn btn-outline-secondary">
                 </div>
                 <br>

@@ -120,6 +120,9 @@ def update_bug(request):
             resolution_list = Resolutions.objects.all()
             attachment_list = Attachments.objects.filter(attachment_bug_id=bug_id)
             current_program = Programs.objects.get(pk=current_bug.program_id.program_id)
+            bug_date = {'reported': str(current_bug.reported_on_date),
+                'resolved': str(current_bug.resolved_on_date),
+                'tested':  str(current_bug.tested_on_date)}
             context = { 
                 'p': current_program,
                 'report_type': report_type_list,
@@ -130,8 +133,8 @@ def update_bug(request):
                 'priority': priority_list,
                 'resolution': resolution_list,
                 'current_bug': current_bug,
-                'current_date' : str(current_bug.reported_on_date),
                 'attachments' : attachment_list,
+                'bug_date': bug_date,
                 }
         else:
             context = {'m_error' : 'No bug_id found (check url params)'}
@@ -184,8 +187,7 @@ def update_bug(request):
         if not description: messages.add_message(request, messages.INFO, 'Description; ')
         else: current_bug.description = description
 
-        if not suggested_fix: messages.add_message(request, messages.INFO, 'Suggested Fix; ')
-        else: current_bug.suggested_fix = suggested_fix
+        if suggested_fix: current_bug.suggested_fix = suggested_fix
 
         if not reported_by: messages.add_message(request, messages.INFO, 'Reported Employee; ')
         else: current_bug.reported_by_emp_id=Employees.objects.only('employee_id').get(employee_id=reported_by)
@@ -205,7 +207,7 @@ def update_bug(request):
 
         if resolution_id: current_bug.resolution = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_id)
 
-        if resolution_version: current_bug.resolution_version = Resolutions.objects.only('resolution_id').get(resolution_id=resolution_version)
+        if resolution_version: current_bug.resolution_version = resolution_version
 
         if resolved_by: current_bug.resolved_by_emp_id = Employees.objects.only('employee_id').get(employee_id=resolved_by)
 
@@ -217,6 +219,10 @@ def update_bug(request):
 
         current_bug.reproducable = isReproduciple
         current_bug.treat_as_deferred = isDeferred
+
+        bug_date = {'reported': str(current_bug.reported_on_date),
+                'resolved': str(current_bug.resolved_on_date),
+                'tested':  str(current_bug.tested_on_date)}
 
         if len(list(messages.get_messages(request))) == 0:
             try:
@@ -238,7 +244,7 @@ def update_bug(request):
                 'priority': priority_list,
                 'resolution': resolution_list,
                 'current_bug': current_bug,
-                'current_date' : str(current_bug.reported_on_date),
+                'bug_date' : bug_date,
                 }
     return render(request, 'static_files/edit-bug.html', context=context)
 
