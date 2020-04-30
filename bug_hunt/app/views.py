@@ -407,6 +407,8 @@ def add_employees(request):
             messages.add_message(request, messages.INFO, "Employee name must not be empty",extra_tags='employee_name_empty')
         if len(request.POST['employee_username']) == 0:
             messages.add_message(request, messages.INFO, "Employee username must not be empty",extra_tags='employee_username_error')
+        if len(request.POST['employee_username']) > 0 and not re.match("^[A-Za-z0-9_-]*$", request.POST['employee_username']):
+            messages.add_message(request, messages.INFO, "Employee username must not have special characters",extra_tags='employee_username_error')
         if len(request.POST['employee_password']) == 0:
             messages.add_message(request, messages.INFO, "Employee password must not be empty",extra_tags='employee_password_empty')
         if User.objects.filter(username=new_employee.employee_username).exists():
@@ -460,10 +462,11 @@ def edit_employees(request):
             user_object.is_staff = is_staff
             username_exists = Employees.objects.filter(employee_username=employee_object.employee_username).exists()
             username_change = employee_message_info['employee_username'] != employee_object.employee_username
-            print("exist", username_exists)
-            print("change", username_change)
+
             if username_exists and username_change:
                 messages.add_message(request, messages.INFO, "Employee username is duplicated", extra_tags='employee_name_update')
+            elif len(employee_object.employee_username) > 0 and not re.match("^[A-Za-z0-9_-]*$", employee_object.employee_username):
+                messages.add_message(request, messages.INFO, "Employee username must not have special characters",extra_tags='employee_name_update')
             else:
                 try:
                     employee_object.save()
