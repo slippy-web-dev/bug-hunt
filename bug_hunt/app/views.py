@@ -14,6 +14,22 @@ import sqlite3, re, json, os
 
 # Create your views here.
 @login_required
+def user_access_level(request):
+    is_admin = request.user.is_staff
+    username = request.user.username
+    access_level = 0
+    is_manager = False 
+    try:
+        employee_object = Employees.objects.filter(employee_username=username).values()
+        username = employee_object[0]['employee_username']
+        accesslevel_obj = AccessLevels.objects.filter(accessLevel_id=employee_object[0]['employee_accesslevel_id']).values()
+        access_level = accesslevel_obj[0]['accesslevel']       
+        is_manager = ( access_level == '2')
+    except Exception as e:
+        print(type(e))
+    return access_level
+
+@login_required
 def index(request):
     is_admin = request.user.is_staff
     username = request.user.username
@@ -110,6 +126,11 @@ def attachment_handler(request):
 
 @login_required
 def update_bug(request):
+
+    #Prevent level 1 users to access update page directly
+    if request.method == 'GET':        
+        if user_access_level(request) == '1':            
+            return HttpResponseRedirect('/app/login')
     if request.method == 'GET':
         bug_id = request.GET.get('bug_id', '')        
         if bug_id.isnumeric() and (len(bug_id) > 0) and BugReports.objects.filter(pk=bug_id):
@@ -731,6 +752,11 @@ def load_areas(request):
     return JsonResponse({"areas": list(area_list)})
 @login_required
 def search_bugs(request):
+
+    #Prevent level 1 users to access search page directly
+    if request.method == 'GET':        
+        if user_access_level(request) == '1':            
+            return HttpResponseRedirect('/app/login')
     # get all lists for dropdown
     program_list = Programs.objects.all()
     report_type_list = ReportTypes.objects.all()
