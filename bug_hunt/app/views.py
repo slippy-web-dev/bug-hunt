@@ -112,7 +112,7 @@ def attachment_handler(request):
 def update_bug(request):
     if request.method == 'GET':
         bug_id = request.GET.get('bug_id', '')
-        if len(bug_id) > 0:
+        if bug_id.isnumeric() and (len(bug_id) > 0) and BugReports.objects.get(pk=bug_id):
             current_bug = BugReports.objects.get(pk=bug_id)
             report_type_list = ReportTypes.objects.all()
             severity_list = Severities.objects.all()
