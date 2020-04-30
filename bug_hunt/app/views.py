@@ -224,10 +224,6 @@ def update_bug(request):
         current_bug.reproducable = isReproduciple
         current_bug.treat_as_deferred = isDeferred
 
-        bug_date = {'reported': str(current_bug.reported_on_date),
-                'resolved': str(current_bug.resolved_on_date),
-                'tested':  str(current_bug.tested_on_date)}
-
         if len(list(messages.get_messages(request))) == 0:
             try:
                 current_bug.save()
@@ -248,7 +244,9 @@ def update_bug(request):
                 'priority': priority_list,
                 'resolution': resolution_list,
                 'current_bug': current_bug,
-                'bug_date' : bug_date,
+                'reported_on_date' : str(current_bug.reported_on_date),
+                'resolved_on_date' : str(current_bug.resolved_on_date),
+                'tested_on_date' : str(current_bug.tested_on_date),
                 }
     return render(request, 'static_files/edit-bug.html', context=context)
 
