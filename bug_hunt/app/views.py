@@ -260,6 +260,7 @@ def update_bug(request):
             except Exception as e:
                 print("Something went wrong")
                 print(e)
+        print(current_bug.resolution_version)
         context = { 
                 'p': current_program,
                 'report_type': report_type_list,
