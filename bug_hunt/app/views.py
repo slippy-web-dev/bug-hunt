@@ -138,6 +138,8 @@ def update_bug(request):
                 'tested_on_date' : str(current_bug.tested_on_date),
                 'attachments' : attachment_list,
                 }
+        elif not bug_id.isnumeric():
+            context = {'m_error' : 'No bug_id found (check url params)'}                
         else:
             reports = BugReports.objects.all()
             if reports:
