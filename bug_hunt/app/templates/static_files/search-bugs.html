@@ -110,7 +110,6 @@
                     <div class="col-sm">
                         <label for="assigned_to">Status
                             <select id="status" name="status" class="form-control fit-ct inline-disp">
-                                <option value="">ALL</option>
                                 {% for s in status %}
                                     {% if new_bug.status.status_id == s.status_id %}
                                     <option value="{{ s.status_id }}" selected>{{ s.status }}</option>
