@@ -800,8 +800,10 @@ def search_bugs(request):
             MyDict.update({'functional_area':area_id})
         if assigned_to  is not None and  assigned_to !='':
             MyDict.update({'assigned_to_emp_id':assigned_to})
-        if status_id  is not None and status_id !='' :
-            MyDict.update({'status':status_id})
+        if status_id  is not None and status_id !='' :            
+            MyDict.update({'status':status_id})        
+        else:            
+            MyDict.update({'status':'4'})    
         if priority_id  is not None and priority_id !='':
             MyDict.update({'priority':priority_id})
         if resolution_version  is not None and resolution_version !='':
