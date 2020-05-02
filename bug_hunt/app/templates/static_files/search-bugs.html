@@ -96,7 +96,7 @@
                             <select id="status" name="status" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for s in status %}
-                                    {% if s.status_id  == 4 %}
+                                    {% if s.status_id  == default_status_forSearch %}
                                         <option value="{{ s.status_id }}" selected>{{ s.status }}</option>
                                     {% else %}
                                         <option value="{{ s.status_id }}">{{ s.status }}</option>

@@ -767,6 +767,8 @@ def search_bugs(request):
     status_list = Status.objects.all()
     priority_list = Priorities.objects.all()
     resolution_list = Resolutions.objects.all()
+    #set the default status for search to 'Open'
+    default_status = int(Status.objects.filter(status='Open').first())    
     if request.method == 'POST':       
         # extract request
         program_id = request.POST.get('program', False)
@@ -782,7 +784,8 @@ def search_bugs(request):
         resolved_by = request.POST.get('resolved_by', False)
         date_resolved = request.POST.get('date_resolved', False)
         tested_by = request.POST.get('tested_by', False)
-        date_tested = request.POST.get('date_tested', False)        
+        date_tested = request.POST.get('date_tested', False)
+     
 
         #Construct the query based on the values provided
         MyDict = {}
@@ -833,5 +836,5 @@ def search_bugs(request):
         'status': status_list,
         'priority': priority_list,
         'resolution': resolution_list,
-        'default_status_forSearch': Status.objects.filter(status='Open').first()}    
+        'default_status_forSearch': default_status}           
         return render(request, 'static_files/search-bugs.html', context=context)

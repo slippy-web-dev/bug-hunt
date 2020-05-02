@@ -46,8 +46,8 @@ class Status(models.Model):
     status    = models.CharField(max_length=16)
     objects = models.Manager()
 
-    def __str__(self):
-        return str(self.status_id)
+    def __int__(self):
+        return (self.status_id)
 
 class Priorities(models.Model):
     priority_id = models.SmallAutoField(primary_key=True, validators=[MinValueValidator(0),MaxValueValidator(8)])
