@@ -30,11 +30,7 @@
                             <select id="report"  name="report" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for rt in report_type %}
-                                    {% if new_bug.type_id.report_type_id == rt.report_type_id %}
-                                    <option value="{{ rt.report_type_id }}" selected>{{ rt.report_type }}</option>
-                                    {% else %}
                                     <option value="{{ rt.report_type_id }}">{{ rt.report_type }}</option>
-                                    {% endif %} 
                                 {% endfor %}
                             </select>
                         </label>
@@ -44,11 +40,7 @@
                             <select id="severity" name="severity" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for st in severity %}
-                                    {% if new_bug.severity_id.severity_id == st.severity_id %}
-                                    <option value="{{ st.severity_id }}" selected>{{ st.severity }}</option>
-                                    {% else %}
-                                    <option value="{{ st.severity_id }}">{{ st.severity }}</option>
-                                    {% endif %} 
+                                    <option value="{{ st.severity_id }}">{{ st.severity }}</option>                                    
                                 {% endfor %}
                             </select>
                         </label>
@@ -61,11 +53,7 @@
                             <select id="reported_by" name="reported_by" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for e in employees %}
-                                    {% if new_bug.reported_by_emp_id.employee_id == e.employee_id %}
-                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
-                                    {% else %}
                                     <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                                    {% endif %} 
                                 {% endfor %}
                             </select>
                         </label>
@@ -94,11 +82,7 @@
                             <select id="assigned_to" name="assigned_to" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for e in employees %}
-                                    {% if new_bug.assigned_to_emp_id.employee_id == e.employee_id %}
-                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
-                                    {% else %}
                                     <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                                    {% endif %} 
                                 {% endfor %}
                             </select>
                         </label>
@@ -110,12 +94,13 @@
                     <div class="col-sm">
                         <label for="assigned_to">Status
                             <select id="status" name="status" class="form-control fit-ct inline-disp">
+                                <option value="">ALL</option>
                                 {% for s in status %}
-                                    {% if new_bug.status.status_id == s.status_id %}
-                                    <option value="{{ s.status_id }}" selected>{{ s.status }}</option>
+                                    {% if s.status_id  == 4 %}
+                                        <option value="{{ s.status_id }}" selected>{{ s.status }}</option>
                                     {% else %}
-                                    <option value="{{ s.status_id }}">{{ s.status }}</option>
-                                    {% endif %} 
+                                        <option value="{{ s.status_id }}">{{ s.status }}</option>
+                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </label>
@@ -125,11 +110,7 @@
                             <select id="priority" name="priority" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for p in priority %}
-                                    {% if new_bug.priority.priority_id == p.priority_id %}
-                                    <option value="{{ p.priority_id }}" selected>{{ p.priority }}</option>
-                                    {% else %}
                                     <option value="{{ p.priority_id }}">{{ p.priority }}</option>
-                                    {% endif %} 
                                 {% endfor %}
                             </select>
                         </label>
@@ -139,11 +120,7 @@
                             <select id="resolution_version" name="resolution_version" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for r in resolution %}
-                                    {% if new_bug.resolution_version.resolution_id == r.resolution_id %}
-                                    <option value="{{ r.resolution_id }}" selected>{{ r.resolution }}</option>
-                                    {% else %}
                                     <option value="{{ r.resolution_id }}">{{ r.resolution }}</option>
-                                    {% endif %} 
                                 {% endfor %}
                             </select>
                         </label> 
@@ -156,11 +133,7 @@
                             <select id="resolved_by" name="resolved_by" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for e in employees %}
-                                    {% if new_bug.resolved_by_emp_id.employee_id == e.employee_id %}
-                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
-                                    {% else %}
                                     <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                                    {% endif %} 
                                 {% endfor %}
                             </select>
                         </label>
@@ -180,11 +153,7 @@
                             <select id="tested_by" name="tested_by" class="form-control fit-ct inline-disp">
                                 <option value="">ALL</option>
                                 {% for e in employees %}
-                                    {% if new_bug.tested_by_emp_id.employee_id == e.employee_id %}
-                                    <option value="{{ e.employee_id }}" selected>{{ e.employee_name }}</option>
-                                    {% else %}
                                     <option value="{{ e.employee_id }}">{{ e.employee_name }}</option>
-                                    {% endif %}
                                 {% endfor %}
                             </select>
                         </label>

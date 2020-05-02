@@ -801,9 +801,7 @@ def search_bugs(request):
         if assigned_to  is not None and  assigned_to !='':
             MyDict.update({'assigned_to_emp_id':assigned_to})
         if status_id  is not None and status_id !='' :            
-            MyDict.update({'status':status_id})        
-        else:            
-            MyDict.update({'status':'4'})    
+            MyDict.update({'status':status_id})                                            
         if priority_id  is not None and priority_id !='':
             MyDict.update({'priority':priority_id})
         if resolution_version  is not None and resolution_version !='':
@@ -834,5 +832,6 @@ def search_bugs(request):
         'areas': area_list,
         'status': status_list,
         'priority': priority_list,
-        'resolution': resolution_list}    
+        'resolution': resolution_list,
+        'default_status_forSearch': Status.objects.filter(status='Open').first()}    
         return render(request, 'static_files/search-bugs.html', context=context)
