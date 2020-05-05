@@ -1,41 +1,65 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
   <head>
     <meta charset="utf-8">
     <title>Edit Programs</title>
   </head>
   <body>
-    {% if  program_list %}
-    <p>Edit a Program</p>
-    {% if messages %}
-      {% for message in messages %}
-        <li>{{ message }}</li></br>
-      {% endfor %} 
-    {% endif %}
-    <table style="width:30%" >
-    {% for program in program_list %}
-    <form action="{% url 'app:edit_programs' %}" method="POST"> {% csrf_token %}
-      <input type="hidden" name="program_id" value="{{ program.program_id }}">
-      <tr>
-        <td>
-          <label for="program_name">Program Name </label>
-          <input type="text" name="program_name" value="{{ program.program_name }}"> </br></br>
-        </td>
-        <td>
-          <label for="program_version">Program Version </label>
-          <input type="text" name="program_version" value="{{ program.program_version }}"></br></br>
-        </td>
-        <td>
-          <label for="program_release">Program Release </label>
-          <input type="text" name="program_release" value="{{ program.program_release }}"></br></br>
-        </td>
-        <td><input type="submit" value="Submit"><input type="reset" value="Cancel"></td>
-      </tr>
-    </form>
-    {% endfor %}
-    </table>
-    {% endif %}
-    
-    <a href="/app/admin/db-maintenance">Back</a>
+    <div class="container vertical-margin">
+      {% if  program_list %}
+      <p>Edit a Program</p>
+      {% if messages %}
+        <div class="alert alert-warning fit-ct">
+          {% for message in messages %}
+            <li>{{ message }}</li>
+          {% endfor %} 
+        </div>
+      {% endif %}
+      <table class="table" >
+      {% for program in program_list %}
+      <form action="{% url 'app:edit_programs' %}" method="POST"> {% csrf_token %}
+        <input type="hidden" name="program_id" value="{{ program.program_id }}">
+        <tr>
+          <td>
+            <label for="program_name">Program Name </label>
+            <input class="form-control fit-ct" type="text" name="program_name" value="{{ program.program_name }}"> </br></br>
+          </td>
+          <td>
+            <label for="program_version">Program Version </label>
+            <input class="form-control fit-ct" type="text" name="program_version" value="{{ program.program_version }}"></br></br>
+          </td>
+          <td>
+            <label for="program_release">Program Release </label>
+            <input class="form-control fit-ct" type="text" name="program_release" value="{{ program.program_release }}"></br></br>
+          </td>
+          <td>
+            <label class="label-min-height" for="submit_btn"></label> 
+            <input class="form-control btn btn-outline-primary" type="submit" name="edit" value="Submit">
+          </td>
+          <td>
+            <label class="label-min-height" for="delete_btn"></label> 
+            <input class="form-control btn btn-outline-danger" type="submit" name="delete" value="Delete" onclick="confirm_delete(event)">
+          </td>
+        </tr>
+      </form>
+      {% endfor %}
+      </table>
+      {% endif %}
+      
+      <hr>
+      <a href="/app/admin/db-maintenance">
+        <button type="button" class="btn btn-outline-secondary">Back</button>
+      </a>
+
+      <script>
+        function confirm_delete() {
+          if(!confirm('Are you sure?'))e.preventDefault();
+        }
+      </script>
+    </div>
   </body>
 </html>

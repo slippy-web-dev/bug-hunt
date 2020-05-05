@@ -1,0 +1,21 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Bughound Start Page</title>
+  </head>
+  <body>
+    <h1>
+      Welcome to BugHound
+    </h1>
+    <ul>
+      <li><a href="{% url 'app:new_bug' %}">Enter a NEW Bug</a></li>
+      <li><a href="{% url 'app:update_bug' %}">Update EXISTING Bug</a></li>
+      <li><a href="{% url 'app:search_bugs' %}">Search for a Bug</a></li>
+      {% if is_admin %}
+      <li><a href="{% url 'app:database_maintenance' %}">Database Maintenance</a></li>
+      {% endif %}
+      <li><a href="{% url 'app:logout' %}">Logout</a></li>
+    </ul>
+  </body>
+</html>

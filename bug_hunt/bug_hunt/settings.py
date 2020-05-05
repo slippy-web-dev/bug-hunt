@@ -123,6 +123,11 @@ USE_TZ = True
 # https://docs.djangoproject.com/en/3.0/howto/static-files/
 
 STATIC_URL = '/static/'
+STATIC_ROOT = os.path.join(BASE_DIR, 'root')
+STATICFILES_DIRS = [
+    os.path.join(BASE_DIR, 'app/templates/static_files'),    
+    os.path.join(BASE_DIR, 'bootstrap'),
+]
 
 # User stuff
 DEFAULT_FILE_STORAGE = '/out/'
@@ -131,3 +136,5 @@ SESSION_EXPIRE_AT_BROWSER_CLOSE = True
 LOGIN_URL = '/app/login/'
 LOGIN_REDIRECT_URL = '/app/index/'
 LOGOUT_REDIRECT_URL = '/app/login/'
+MEDIA_URL = '/attachments/'
+MEDIA_ROOT = os.path.join(BASE_DIR, 'attachments')

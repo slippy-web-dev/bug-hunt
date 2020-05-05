@@ -1,0 +1,63 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <meta charset="utf-8">
+    <title>Add Programs</title>
+  </head>
+  <body>
+    {% if  program_list %}
+    <table style="width:30%" >
+    {% for program in program_list %}
+    <tr>
+      <td>{{ program.program_name }}</td>
+      <td>{{ program.program_version }}</td>
+      <td>{{ program.program_release }}</td>
+    </tr>
+    {% endfor %}
+    </table>
+    {% endif %}
+    <p>Add a Program</p>
+    <form action="{% url 'app:add_programs' %}" method="POST"> {% csrf_token %}
+      <label for="program_name">Program Name </label>
+      <input type="text" name="program_name"> </br></br>
+      {% if messages %}
+        {% for message in messages %}
+          {% if 'program_name_empty' in message.extra_tags %}
+      <ul class="messages">
+          <li>{{ message }}</li>
+           </br>
+      </ul>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      <label for="program_version">Program Version </label>
+      <input type="text" name="program_version"></br></br>
+      {% if messages %}
+        {% for message in messages %}
+          {% if 'program_version_empty' in message.extra_tags %}
+      <ul class="messages">
+          <li>{{ message }}</li>
+           </br>
+      </ul>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      <label for="program_release">Program Release </label>
+      <input type="text" name="program_release"></br></br>
+      {% if messages %}
+        {% for message in messages %}
+          {% if 'program_release_empty' in message.extra_tags %}
+      <ul class="messages">
+          <li>{{ message }}</li>
+           </br>
+      </ul>
+          {% endif %}
+        {% endfor %}
+      {% endif %}
+      <input type="submit" value="Submit">
+      <input type="reset" value="Cancel">
+    </form>
+    
+    <p><a href="/app/admin/db-maintenance">Back</a></p>
+  </body>
+</html>

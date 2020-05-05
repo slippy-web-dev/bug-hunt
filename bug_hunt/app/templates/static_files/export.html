@@ -1,35 +1,54 @@
 <!DOCTYPE html>
+{% load static %}
+<link rel="stylesheet" href="{% static 'css/bootstrap.min.css' %}">
+<link rel="stylesheet" href="{% static 'css/bootstrap.css' %}">
+<link rel="stylesheet" href="{% static 'css/styles.css' %}">
 <html>
   <head>
     <meta charset="utf-8">
     <title>Export Data Page</title>
   </head>
   <body>
-    {% if message %}
-    <h1>{{message}}</h1>
-    {% endif %}
-    <form action="{% url 'app:export_data' %}" method="POST"> {% csrf_token %}
-      <table style="width:30%">
-        <tr>
-          <td>
-            Table
-          </td>
-          <td>
-            Format
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <input type="text" name="db_table" value="Employees">
-          </td>
-          <td>
-            <input type="text" name="file_format" value="XML">
-          </td>
-          <td><input type="submit" value="Submit"></td>
-          <td><input type="reset" value="Cancel"></td>
-        </tr>
-      </table>
-    </form>
-    <a href="/app/admin/db-maintenance">Back</a>
+    <div class="container vertical-margin">
+      {% if message %}
+      <h1>{{message}}</h1>
+      {% endif %}
+      <form action="{% url 'app:export_data' %}" method="POST"> {% csrf_token %}
+        <table class="table fit-ct">
+          <tr>
+            <td class="text-center">Table</td>
+            <td class="text-center">Format</td>
+          </tr>
+          <tr>
+            <td>
+              <select class="form-control fit-ct text-center" id="tables" name="db_table">
+                <option for="tables" value="Employees">Employees</option>
+                <option for="tables" value="Areas">Functional Areas</option>
+                <option for="tables" value="Programs">Programs</option>
+              </select>
+              <!-- <input class="form-control fit-ct text-center" type="text" name="db_table" value="Employees"> -->
+            </td>
+            <td>
+              <select class="form-control fit-ct text-center" id="format" name="file_format">
+                <option for="format" value="XML">XML</option>
+                <option for="format" value="ASCII">ASCII</option>
+              </select>
+              <!-- <input class="form-control fit-ct text-center" type="text" name="file_format" value="XML"> -->
+            </td>
+          </tr>
+          <tr>
+            <td>
+              <br>
+              <a href="/app/admin/db-maintenance">
+                <button type="button" class="btn btn-outline-secondary">Back</button>
+              </a>
+              <input class="form-control btn btn-outline-primary fit-ct" type="submit" value="Export">
+            </td>
+            <td></td>
+          </tr>
+        </table>
+        
+      </form>
+    </div>
   </body>
 </html>
